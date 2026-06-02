@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Vite emits these from the .ts config — source of truth is the .ts files
+vite.config.js
+vite.config.d.ts
+
+# Env / secrets — NEVER commit real keys
+.env
+.env.*
+!.env.example
+
+# Supabase local artifacts
+supabase/.branches/
+supabase/.temp/
+.supabase/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Claude Code local settings (CLAUDE.md in repo root stays tracked)
+.claude/

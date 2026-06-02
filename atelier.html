@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atelier — Der Marktplatz für vollendete Software</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F5F0E8;
+    --bg-warm: #EFE7D6;
+    --bg-card: #FAF7F0;
+    --ink: #1B1916;
+    --ink-soft: #4A463F;
+    --ink-mute: #8B8478;
+    --line: #DDD3BF;
+    --line-soft: #E8DFC9;
+    --accent: #CC785C;
+    --accent-deep: #A85A40;
+    --accent-soft: #E8B8A6;
+    --success: #5F7A4F;
+    --gold: #B89968;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Geist', -apple-system, sans-serif;
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  /* paper grain overlay */
+  body::before{
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.4;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0 0.05 0 0 0 0.08 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    mix-blend-mode: multiply;
+  }
+
+  .container{
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ============ NAV ============ */
+  nav{
+    padding: 28px 0;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+  .nav-inner{
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 48px;
+  }
+  .logo{
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    font-style: italic;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-mark{
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: relative;
+    display: inline-block;
+  }
+  .logo-mark::after{
+    content: ""; position: absolute;
+    inset: 6px;
+    background: var(--bg);
+    border-radius: 50%;
+  }
+  .logo-mark::before{
+    content: ""; position: absolute;
+    left: 50%; top: 50%;
+    width: 3px; height: 3px;
+    background: var(--accent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+
+  .nav-links{
+    display: flex; gap: 36px;
+    list-style: none;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .nav-links a{
+    color: inherit; text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a:hover{ color: var(--accent); }
+  .nav-cta{
+    display: flex; gap: 14px; align-items: center;
+  }
+  .btn{
+    font-family: 'Geist', sans-serif;
+    font-size: 14px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+  .btn:hover{ background: var(--bg-card); border-color: var(--ink); }
+  .btn-primary{
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+  .btn-primary:hover{
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ============ HERO ============ */
+  .hero{
+    padding: 110px 0 80px;
+    position: relative;
+  }
+  .hero-grid{
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 60px;
+    align-items: end;
+  }
+  .eyebrow{
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 32px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::before{
+    content: "";
+    width: 24px; height: 1px;
+    background: var(--ink-mute);
+  }
+  h1{
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(56px, 7vw, 104px);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin-bottom: 32px;
+  }
+  h1 em{
+    font-style: italic;
+    font-weight: 300;
+    color: var(--accent);
+    font-variation-settings: "SOFT" 60;
+  }
+  .hero-lede{
+    font-size: 19px;
+    color: var(--ink-soft);
+    max-width: 540px;
+    line-height: 1.55;
+    margin-bottom: 40px;
+  }
+  .hero-actions{
+    display: flex; gap: 16px;
+    margin-bottom: 60px;
+  }
+
+  /* hero side card — featured listing teaser */
+  .hero-feature{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 28px;
+    position: relative;
+    transform: rotate(1.2deg);
+    box-shadow:
+      0 1px 0 var(--bg-warm),
+      0 30px 50px -25px rgba(40, 30, 20, 0.18),
+      0 8px 15px -8px rgba(40, 30, 20, 0.08);
+  }
+  .hero-feature::before{
+    content: "Featured";
+    position: absolute;
+    top: -10px; left: 24px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.15em;
+    padding: 5px 10px;
+    text-transform: uppercase;
+  }
+  .feature-meta{
+    display: flex; justify-content: space-between;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .feature-title{
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+  .feature-sub{
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .feature-stats{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+  }
+  .stat-label{
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+  }
+  .stat-value{
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .feature-price{
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .price-big{
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+  }
+  .price-meta{ font-size: 12px; color: var(--ink-mute); }
+
+  /* hero stats row */
+  .hero-stats{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin-top: 60px;
+  }
+  .hero-stat{
+    padding: 28px 24px;
+    border-right: 1px solid var(--line);
+  }
+  .hero-stat:last-child{ border-right: 0; }
+  .hero-stat-num{
+    font-family: 'Fraunces', serif;
+    font-size: 44px;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .hero-stat-num sup{
+    font-size: 18px;
+    color: var(--accent);
+    margin-left: 2px;
+    top: -18px;
+  }
+  .hero-stat-label{
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+
+  /* ============ SECTION HEADERS ============ */
+  section{ padding: 100px 0; position: relative; }
+  .section-head{
+    display: flex; justify-content: space-between; align-items: end;
+    margin-bottom: 60px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--line);
+  }
+  .section-head-left{ max-width: 640px; }
+  h2{
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(40px, 4.5vw, 60px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  h2 em{ font-style: italic; color: var(--accent); }
+  .section-sub{
+    color: var(--ink-soft);
+    font-size: 17px;
+    max-width: 540px;
+  }
+
+  /* ============ FILTERS / MARKETPLACE ============ */
+  .marketplace-grid{
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 48px;
+  }
+  .filter-panel{
+    position: sticky; top: 110px;
+    align-self: start;
+    font-size: 14px;
+  }
+  .filter-group{
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .filter-group:last-child{ border-bottom: 0; }
+  .filter-title{
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+  .filter-option{
+    display: flex; justify-content: space-between;
+    padding: 6px 0;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: color 0.15s;
+  }
+  .filter-option:hover{ color: var(--accent); }
+  .filter-option.active{ color: var(--ink); font-weight: 500; }
+  .filter-option .count{
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+  }
+  .range-track{
+    height: 4px;
+    background: var(--line-soft);
+    border-radius: 2px;
+    position: relative;
+    margin: 18px 0 8px;
+  }
+  .range-fill{
+    position: absolute;
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    left: 15%; right: 35%;
+  }
+  .range-handle{
+    position: absolute;
+    width: 14px; height: 14px;
+    background: var(--bg);
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    top: -5px;
+  }
+  .range-handle.left{ left: 13%; }
+  .range-handle.right{ right: 33%; }
+  .range-vals{
+    display: flex; justify-content: space-between;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+  }
+
+  /* ============ LISTING CARDS ============ */
+  .listings-toolbar{
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .listings-count{
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+  }
+  .listings-sort{
+    font-size: 13px;
+    color: var(--ink-soft);
+    display: flex; gap: 18px;
+  }
+  .listings-sort span{ cursor: pointer; }
+  .listings-sort .active{ color: var(--ink); font-weight: 500; border-bottom: 1px solid var(--accent); padding-bottom: 2px; }
+
+  .listings{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .listing{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 24px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(.2,.7,.3,1);
+    overflow: hidden;
+  }
+  .listing:hover{
+    transform: translateY(-3px);
+    border-color: var(--ink);
+    box-shadow: 0 18px 30px -18px rgba(40, 30, 20, 0.2);
+  }
+  .listing-head{
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 18px;
+  }
+  .listing-icon{
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    color: #fff;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .icon-1{ background: linear-gradient(135deg, #CC785C, #A85A40); }
+  .icon-2{ background: linear-gradient(135deg, #5F7A4F, #3D5132); }
+  .icon-3{ background: linear-gradient(135deg, #B89968, #856E48); }
+  .icon-4{ background: linear-gradient(135deg, #4A6B7A, #2F4A55); }
+  .icon-5{ background: linear-gradient(135deg, #8B6B8B, #604660); }
+  .icon-6{ background: linear-gradient(135deg, #C26B47, #8B4A30); }
+
+  .listing-badges{
+    display: flex; gap: 6px; flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .badge{
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 3px;
+    background: var(--bg-warm);
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+  }
+  .badge.verified{ background: var(--success); color: #fff; border-color: var(--success); }
+  .badge.hot{ background: var(--accent); color: #fff; border-color: var(--accent); }
+  .badge.new{ background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  .listing-title{
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .listing-cat{
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+  }
+  .listing-desc{
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 20px;
+    min-height: 65px;
+  }
+  .tech-stack{
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .tech-tag{
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    padding: 3px 7px;
+    background: var(--bg-warm);
+    border-radius: 3px;
+    color: var(--ink-soft);
+  }
+
+  .listing-metrics{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .metric{ }
+  .metric-label{
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-mute);
+    margin-bottom: 3px;
+  }
+  .metric-val{
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .metric-val small{
+    font-family: 'Geist', sans-serif;
+    font-size: 11px;
+    color: var(--ink-mute);
+  }
+  .metric-trend{
+    font-size: 10px;
+    color: var(--success);
+    font-family: 'Geist Mono', monospace;
+    margin-left: 3px;
+  }
+
+  .listing-footer{
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .seller{
+    display: flex; align-items: center; gap: 10px;
+  }
+  .seller-avatar{
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--bg-warm);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+  }
+  .seller-info{ font-size: 12px; }
+  .seller-name{ color: var(--ink); font-weight: 500; }
+  .seller-rating{
+    color: var(--ink-mute);
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+  }
+  .listing-price{
+    text-align: right;
+  }
+  .listing-price-num{
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .listing-price-type{
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ============ HOW IT WORKS ============ */
+  .how-section{
+    background: var(--bg-warm);
+    margin: 0 -100vw;
+    padding-left: calc(100vw - 50%);
+    padding-right: calc(100vw - 50%);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .how-inner{
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 100px 40px;
+  }
+  .steps{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 60px;
+    position: relative;
+  }
+  .step{
+    padding: 0 24px;
+    position: relative;
+    border-left: 1px solid var(--line);
+  }
+  .step:first-child{ border-left: 0; padding-left: 0; }
+  .step-num{
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 64px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 24px;
+    letter-spacing: -0.04em;
+  }
+  .step-title{
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .step-desc{
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ============ TRUST / FEATURES ============ */
+  .features-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .feature{
+    background: var(--bg);
+    padding: 36px 32px;
+  }
+  .feature-icon{
+    width: 44px; height: 44px;
+    border-radius: 4px;
+    background: var(--accent);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+  }
+  .feature-icon svg{ width: 22px; height: 22px; }
+  .feature-title{
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .feature-desc{
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  /* ============ CONTRACT / DEAL FLOW ============ */
+  .deal-flow{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .deal-visual{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 32px;
+    position: relative;
+    box-shadow: 0 20px 40px -25px rgba(40, 30, 20, 0.2);
+  }
+  .deal-step{
+    display: flex; gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px dashed var(--line);
+    position: relative;
+  }
+  .deal-step:last-child{ border-bottom: 0; }
+  .deal-step-icon{
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--bg-warm);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .deal-step.done .deal-step-icon{
+    background: var(--success);
+    color: #fff;
+    border-color: var(--success);
+  }
+  .deal-step.active .deal-step-icon{
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .deal-step-content{ flex: 1; }
+  .deal-step-name{
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .deal-step-meta{
+    font-size: 12px;
+    color: var(--ink-mute);
+    font-family: 'Geist Mono', monospace;
+  }
+  .deal-step.active .deal-step-name{ color: var(--accent); }
+
+  .escrow-card{
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--bg-warm);
+    border-radius: 4px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .escrow-label{
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-mute);
+  }
+  .escrow-amount{
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 400;
+  }
+
+  /* ============ FOR SELLERS / BUYERS ============ */
+  .audience-split{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .audience-card{
+    background: var(--ink);
+    color: var(--bg);
+    padding: 48px;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+  .audience-card.alt{
+    background: var(--accent);
+    color: #fff;
+  }
+  .audience-card::before{
+    content: "";
+    position: absolute;
+    right: -100px; top: -100px;
+    width: 280px; height: 280px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+  }
+  .audience-card::after{
+    content: "";
+    position: absolute;
+    right: -50px; top: -50px;
+    width: 180px; height: 180px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .audience-tag{
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    opacity: 0.6;
+    margin-bottom: 24px;
+  }
+  .audience-card h3{
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin-bottom: 20px;
+    position: relative; z-index: 2;
+  }
+  .audience-card h3 em{ font-style: italic; }
+  .audience-card p{
+    opacity: 0.8;
+    font-size: 15px;
+    line-height: 1.55;
+    max-width: 380px;
+    margin-bottom: 32px;
+    position: relative; z-index: 2;
+  }
+  .audience-list{
+    list-style: none;
+    margin-bottom: 36px;
+    position: relative; z-index: 2;
+  }
+  .audience-list li{
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .audience-list li::before{
+    content: "→";
+    color: var(--accent-soft);
+    font-family: 'Geist Mono', monospace;
+  }
+  .audience-card.alt .audience-list li::before{ color: var(--bg); }
+
+  .btn-light{
+    background: var(--bg);
+    color: var(--ink);
+    border-color: var(--bg);
+  }
+  .btn-light:hover{ background: var(--bg-warm); border-color: var(--bg-warm); }
+
+  /* ============ FOOTER ============ */
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 80px 0 40px;
+    background: var(--bg);
+  }
+  .footer-top{
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  .footer-brand .logo{ margin-bottom: 16px; }
+  .footer-tag{
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 17px;
+    max-width: 280px;
+    line-height: 1.4;
+  }
+  .footer-col h4{
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-mute);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .footer-col ul{ list-style: none; }
+  .footer-col li{ margin-bottom: 8px; }
+  .footer-col a{
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.15s;
+  }
+  .footer-col a:hover{ color: var(--accent); }
+  .footer-bottom{
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px;
+    color: var(--ink-mute);
+  }
+
+  /* ============ DECORATIVE ============ */
+  .ornament{
+    position: absolute;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--accent);
+    opacity: 0.15;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+  }
+
+  /* responsive */
+  @media (max-width: 1024px){
+    .hero-grid{ grid-template-columns: 1fr; }
+    .marketplace-grid{ grid-template-columns: 1fr; }
+    .filter-panel{ position: static; }
+    .listings{ grid-template-columns: 1fr; }
+    .steps{ grid-template-columns: 1fr 1fr; }
+    .features-grid{ grid-template-columns: 1fr; }
+    .audience-split{ grid-template-columns: 1fr; }
+    .deal-flow{ grid-template-columns: 1fr; gap: 40px; }
+    .hero-stats{ grid-template-columns: 1fr 1fr; }
+    .hero-stat:nth-child(2){ border-right: 0; }
+    .hero-stat:nth-child(1), .hero-stat:nth-child(2){ border-bottom: 1px solid var(--line); }
+    .footer-top{ grid-template-columns: 1fr 1fr; }
+    .nav-links{ display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <div class="logo">
+      <span class="logo-mark"></span>
+      Atelier
+    </div>
+    <ul class="nav-links">
+      <li><a href="#marketplace">Marktplatz</a></li>
+      <li><a href="#how">Ablauf</a></li>
+      <li><a href="#sellers">Verkaufen</a></li>
+      <li><a href="#trust">Treuhand</a></li>
+      <li><a href="#about">Über uns</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="btn">Anmelden</a>
+      <a href="#" class="btn btn-primary">Projekt einstellen <span>↗</span></a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">EST. 2026 · DER MARKTPLATZ FÜR ENTWICKLER</div>
+        <h1>
+          Wo Software<br>
+          den Besitzer <em>wechselt.</em>
+        </h1>
+        <p class="hero-lede">
+          Atelier ist die kuratierte Börse für fertige Apps, SaaS-Produkte und ganze Software-Firmen. Verifizierte Umsätze, geprüfter Code, sicherer Transfer — ohne dass du dich um Verträge, Treuhand oder Lizenzfragen kümmern musst.
+        </p>
+        <div class="hero-actions">
+          <a href="#marketplace" class="btn btn-primary">Marktplatz erkunden <span>→</span></a>
+          <a href="#sellers" class="btn">Projekt verkaufen</a>
+        </div>
+      </div>
+      <aside class="hero-feature">
+        <div class="feature-meta">
+          <span>SaaS · B2B</span>
+          <span>● Live</span>
+        </div>
+        <div class="feature-title">TaskFlow Pro</div>
+        <div class="feature-sub">Projektmanagement für Agenturen</div>
+        <div class="feature-stats">
+          <div>
+            <div class="stat-label">MRR</div>
+            <div class="stat-value">€3.240</div>
+          </div>
+          <div>
+            <div class="stat-label">Kunden</div>
+            <div class="stat-value">142</div>
+          </div>
+          <div>
+            <div class="stat-label">Stack</div>
+            <div class="stat-value" style="font-size:14px;">Next · Postgres</div>
+          </div>
+          <div>
+            <div class="stat-label">Alter</div>
+            <div class="stat-value">2,4 J.</div>
+          </div>
+        </div>
+        <div class="feature-price">
+          <div>
+            <div class="price-big">€48.500</div>
+            <div class="price-meta">≈ 15× MRR</div>
+          </div>
+          <div class="btn btn-primary" style="font-size:12px; padding:8px 14px;">Ansehen →</div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">1.247<sup>+</sup></div>
+        <div class="hero-stat-label">Aktive Listings auf<br>der Plattform</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">€38<sup>M</sup></div>
+        <div class="hero-stat-label">Transaktionsvolumen<br>in 2025</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">94<sup>%</sup></div>
+        <div class="hero-stat-label">Erfolgreich abgeschlossene<br>Treuhand-Deals</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">48h</div>
+        <div class="hero-stat-label">Durchschnittliche<br>Code-Review-Zeit</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARKETPLACE ============ -->
+<section id="marketplace">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="eyebrow">DER MARKTPLATZ</div>
+        <h2>Vollendete Werke, <em>sofort verfügbar.</em></h2>
+        <p class="section-sub">
+          Jedes Listing wird technisch geprüft. Wir validieren Umsätze, dokumentieren den Tech-Stack und schauen uns den Code an, bevor wir ein Projekt freigeben.
+        </p>
+      </div>
+      <a href="#" class="btn">Alle ansehen <span>→</span></a>
+    </div>
+
+    <div class="marketplace-grid">
+      <!-- FILTERS -->
+      <aside class="filter-panel">
+        <div class="filter-group">
+          <div class="filter-title">Kategorie</div>
+          <div class="filter-option active"><span>Alle</span><span class="count">1247</span></div>
+          <div class="filter-option"><span>SaaS</span><span class="count">412</span></div>
+          <div class="filter-option"><span>Mobile App (iOS)</span><span class="count">238</span></div>
+          <div class="filter-option"><span>Mobile App (Android)</span><span class="count">194</span></div>
+          <div class="filter-option"><span>Web-App</span><span class="count">186</span></div>
+          <div class="filter-option"><span>Dev-Tool / CLI</span><span class="count">87</span></div>
+          <div class="filter-option"><span>Spiel</span><span class="count">76</span></div>
+          <div class="filter-option"><span>KI / ML</span><span class="count">54</span></div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">Preis</div>
+          <div class="range-track">
+            <div class="range-fill"></div>
+            <div class="range-handle left"></div>
+            <div class="range-handle right"></div>
+          </div>
+          <div class="range-vals"><span>€2.500</span><span>€180.000</span></div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">Geschäftsmodell</div>
+          <div class="filter-option active"><span>Mit MRR</span><span class="count">684</span></div>
+          <div class="filter-option"><span>One-Time Sales</span><span class="count">312</span></div>
+          <div class="filter-option"><span>In-App Käufe</span><span class="count">178</span></div>
+          <div class="filter-option"><span>Ad-finanziert</span><span class="count">73</span></div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">Verkaufsoption</div>
+          <div class="filter-option"><span>Komplettverkauf</span><span class="count">932</span></div>
+          <div class="filter-option"><span>Anteile / Sponsoring</span><span class="count">214</span></div>
+          <div class="filter-option"><span>Lizenz-Übertragung</span><span class="count">101</span></div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">Tech-Stack</div>
+          <div class="filter-option"><span>React / Next.js</span><span class="count">287</span></div>
+          <div class="filter-option"><span>Swift / iOS</span><span class="count">156</span></div>
+          <div class="filter-option"><span>Vue / Nuxt</span><span class="count">98</span></div>
+          <div class="filter-option"><span>Python / Django</span><span class="count">87</span></div>
+          <div class="filter-option"><span>Flutter</span><span class="count">73</span></div>
+        </div>
+      </aside>
+
+      <!-- LISTINGS -->
+      <div>
+        <div class="listings-toolbar">
+          <div class="listings-count">1.247 PROJEKTE · GEPRÜFT</div>
+          <div class="listings-sort">
+            <span class="active">Empfohlen</span>
+            <span>Neueste</span>
+            <span>Preis ↑</span>
+            <span>Preis ↓</span>
+            <span>MRR</span>
+          </div>
+        </div>
+
+        <div class="listings">
+
+          <article class="listing">
+            <div class="listing-head">
+              <div class="listing-icon icon-1">P</div>
+              <div class="listing-badges">
+                <span class="badge verified">Verifiziert</span>
+                <span class="badge hot">Hot</span>
+              </div>
+            </div>
+            <div class="listing-title">PixelCraft Studio</div>
+            <div class="listing-cat">iOS APP · BILDBEARBEITUNG</div>
+            <p class="listing-desc">
+              Premium-Foto-Editor mit über 150.000 Downloads. KI-gestützte Filter, abgeschlossene Architektur, sauberer SwiftUI-Code. Inkl. App-Store-Account-Transfer.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-tag">Swift</span>
+              <span class="tech-tag">SwiftUI</span>
+              <span class="tech-tag">CoreML</span>
+              <span class="tech-tag">CloudKit</span>
+            </div>
+            <div class="listing-metrics">
+              <div class="metric">
+                <div class="metric-label">Downloads</div>
+                <div class="metric-val">152k</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Monatl. Umsatz</div>
+                <div class="metric-val">€2.180<span class="metric-trend">+12%</span></div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Alter</div>
+                <div class="metric-val">3,1 <small>J.</small></div>
+              </div>
+            </div>
+            <div class="listing-footer">
+              <div class="seller">
+                <div class="seller-avatar">M</div>
+                <div class="seller-info">
+                  <div class="seller-name">Marek S.</div>
+                  <div class="seller-rating">★ 4.9 · 7 Verkäufe</div>
+                </div>
+              </div>
+              <div class="listing-price">
+                <div class="listing-price-num">€32.500</div>
+                <div class="listing-price-type">Komplettverkauf</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="listing">
+            <div class="listing-head">
+              <div class="listing-icon icon-2">D</div>
+              <div class="listing-badges">
+                <span class="badge verified">Verifiziert</span>
+              </div>
+            </div>
+            <div class="listing-title">DocuMind AI</div>
+            <div class="listing-cat">SAAS · KI / DOKUMENTEN-ANALYSE</div>
+            <p class="listing-desc">
+              B2B-Plattform für automatische Vertragsanalyse. 38 Enterprise-Kunden, MRR steigt seit 14 Monaten. Verkäufer bietet 4-Wochen-Handover an.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-tag">Next.js</span>
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">FastAPI</span>
+              <span class="tech-tag">OpenAI</span>
+              <span class="tech-tag">Postgres</span>
+            </div>
+            <div class="listing-metrics">
+              <div class="metric">
+                <div class="metric-label">MRR</div>
+                <div class="metric-val">€11.400<span class="metric-trend">+8%</span></div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Kunden</div>
+                <div class="metric-val">38</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Churn</div>
+                <div class="metric-val">2,1<small>%</small></div>
+              </div>
+            </div>
+            <div class="listing-footer">
+              <div class="seller">
+                <div class="seller-avatar">A</div>
+                <div class="seller-info">
+                  <div class="seller-name">Aydan K.</div>
+                  <div class="seller-rating">★ 5.0 · 2 Verkäufe</div>
+                </div>
+              </div>
+              <div class="listing-price">
+                <div class="listing-price-num">€164.000</div>
+                <div class="listing-price-type">Firmen-Übernahme</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="listing">
+            <div class="listing-head">
+              <div class="listing-icon icon-3">H</div>
+              <div class="listing-badges">
+                <span class="badge new">Neu</span>
+              </div>
+            </div>
+            <div class="listing-title">HabitCircle</div>
+            <div class="listing-cat">CROSS-PLATFORM · LIFESTYLE</div>
+            <p class="listing-desc">
+              Habit-Tracker mit Freemium-Modell, läuft auf iOS und Android. 24k aktive Nutzer, organisches Wachstum, kein Marketing-Budget bisher.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-tag">Flutter</span>
+              <span class="tech-tag">Firebase</span>
+              <span class="tech-tag">RevenueCat</span>
+            </div>
+            <div class="listing-metrics">
+              <div class="metric">
+                <div class="metric-label">Aktive User</div>
+                <div class="metric-val">24k</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Monatl. Umsatz</div>
+                <div class="metric-val">€720</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Alter</div>
+                <div class="metric-val">1,2 <small>J.</small></div>
+              </div>
+            </div>
+            <div class="listing-footer">
+              <div class="seller">
+                <div class="seller-avatar">L</div>
+                <div class="seller-info">
+                  <div class="seller-name">Lena M.</div>
+                  <div class="seller-rating">★ 4.7 · 1 Verkauf</div>
+                </div>
+              </div>
+              <div class="listing-price">
+                <div class="listing-price-num">€9.800</div>
+                <div class="listing-price-type">Komplettverkauf</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="listing">
+            <div class="listing-head">
+              <div class="listing-icon icon-4">V</div>
+              <div class="listing-badges">
+                <span class="badge verified">Verifiziert</span>
+                <span class="badge">Anteile</span>
+              </div>
+            </div>
+            <div class="listing-title">VendorVault</div>
+            <div class="listing-cat">SAAS · B2B INVENTARVERWALTUNG</div>
+            <p class="listing-desc">
+              Etablierte Lager-Software für Mittelstand. Verkäufer sucht Co-Founder/Investor — bietet 35% Anteile für €67k. Vollständige Übergabe der Tech-Verantwortung möglich.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-tag">Ruby on Rails</span>
+              <span class="tech-tag">React</span>
+              <span class="tech-tag">Postgres</span>
+              <span class="tech-tag">Redis</span>
+            </div>
+            <div class="listing-metrics">
+              <div class="metric">
+                <div class="metric-label">MRR</div>
+                <div class="metric-val">€4.890</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Kunden</div>
+                <div class="metric-val">61</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Anteile</div>
+                <div class="metric-val">35<small>%</small></div>
+              </div>
+            </div>
+            <div class="listing-footer">
+              <div class="seller">
+                <div class="seller-avatar">T</div>
+                <div class="seller-info">
+                  <div class="seller-name">Thomas R.</div>
+                  <div class="seller-rating">★ 4.8 · 3 Deals</div>
+                </div>
+              </div>
+              <div class="listing-price">
+                <div class="listing-price-num">€67.000</div>
+                <div class="listing-price-type">Für 35% Anteile</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="listing">
+            <div class="listing-head">
+              <div class="listing-icon icon-5">C</div>
+              <div class="listing-badges">
+                <span class="badge verified">Verifiziert</span>
+              </div>
+            </div>
+            <div class="listing-title">CodeReview Bot</div>
+            <div class="listing-cat">DEV-TOOL · GITHUB-INTEGRATION</div>
+            <p class="listing-desc">
+              GitHub-App für automatisierte Code-Reviews mit GPT-Backend. 320 zahlende Teams, vollständige Dokumentation, sauberer Test-Coverage.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-tag">Node.js</span>
+              <span class="tech-tag">TypeScript</span>
+              <span class="tech-tag">GitHub API</span>
+              <span class="tech-tag">OpenAI</span>
+            </div>
+            <div class="listing-metrics">
+              <div class="metric">
+                <div class="metric-label">Teams</div>
+                <div class="metric-val">320</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">MRR</div>
+                <div class="metric-val">€1.620<span class="metric-trend">+4%</span></div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Margin</div>
+                <div class="metric-val">71<small>%</small></div>
+              </div>
+            </div>
+            <div class="listing-footer">
+              <div class="seller">
+                <div class="seller-avatar">N</div>
+                <div class="seller-info">
+                  <div class="seller-name">Niko F.</div>
+                  <div class="seller-rating">★ 4.9 · 5 Verkäufe</div>
+                </div>
+              </div>
+              <div class="listing-price">
+                <div class="listing-price-num">€18.400</div>
+                <div class="listing-price-type">Komplettverkauf</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="listing">
+            <div class="listing-head">
+              <div class="listing-icon icon-6">R</div>
+              <div class="listing-badges">
+                <span class="badge hot">Hot</span>
+              </div>
+            </div>
+            <div class="listing-title">Rhythmica</div>
+            <div class="listing-cat">iOS APP · MUSIK / SPIEL</div>
+            <p class="listing-desc">
+              Indie-Rhythm-Spiel mit eigener Engine. 89k Downloads, Featured-Spot im App-Store, starkes Review-Profil. Source-Code in Swift mit Metal.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-tag">Swift</span>
+              <span class="tech-tag">Metal</span>
+              <span class="tech-tag">AudioKit</span>
+            </div>
+            <div class="listing-metrics">
+              <div class="metric">
+                <div class="metric-label">Downloads</div>
+                <div class="metric-val">89k</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">In-App / Monat</div>
+                <div class="metric-val">€1.420</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Rating</div>
+                <div class="metric-val">4,8 <small>★</small></div>
+              </div>
+            </div>
+            <div class="listing-footer">
+              <div class="seller">
+                <div class="seller-avatar">S</div>
+                <div class="seller-info">
+                  <div class="seller-name">Sasha B.</div>
+                  <div class="seller-rating">★ 4.6 · 2 Verkäufe</div>
+                </div>
+              </div>
+              <div class="listing-price">
+                <div class="listing-price-num">€24.000</div>
+                <div class="listing-price-type">Komplettverkauf</div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how" class="how-section">
+  <div class="how-inner">
+    <div class="section-head" style="border-color: var(--line);">
+      <div class="section-head-left">
+        <div class="eyebrow">DER ABLAUF</div>
+        <h2>In vier Schritten <em>vom Code zum Closing.</em></h2>
+        <p class="section-sub">
+          Wir begleiten beide Seiten — von der ersten Anfrage bis zur sauberen Übergabe von Repository, Lizenzen und Accounts.
+        </p>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">i.</div>
+        <h3 class="step-title">Projekt einreichen</h3>
+        <p class="step-desc">
+          Du beschreibst dein Produkt: Tech-Stack, Umsätze, Kundenbasis, Dokumentation. Wir geben dir ein internes Review innerhalb von 48 Stunden.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step-num">ii.</div>
+        <h3 class="step-title">Verifizierung</h3>
+        <p class="step-desc">
+          Stripe-, App-Store- und GitHub-Daten werden anonymisiert validiert. Unser Tech-Team schaut sich Code-Qualität und Architektur an.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step-num">iii.</div>
+        <h3 class="step-title">Verhandlung & NDA</h3>
+        <p class="step-desc">
+          Interessierte Käufer fragen über die Plattform an. Digitale NDAs, Verträge und Due-Diligence-Material werden über uns abgewickelt.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step-num">iv.</div>
+        <h3 class="step-title">Treuhand & Transfer</h3>
+        <p class="step-desc">
+          Kaufpreis liegt sicher in unserer Treuhand. Erst nach erfolgreichem Transfer von Code, Lizenzen & Accounts wird ausgezahlt.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES / TRUST ============ -->
+<section id="trust">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="eyebrow">WAS UNS ANDERS MACHT</div>
+        <h2>Mehr als nur eine <em>Anzeigenbörse.</em></h2>
+        <p class="section-sub">
+          Wir behandeln Software wie das Handwerk, das sie ist. Jedes Listing wird kuratiert, jeder Deal abgesichert.
+        </p>
+      </div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 2L2 7v6c0 5 3.5 9.5 10 11 6.5-1.5 10-6 10-11V7l-10-5z"/></svg>
+        </div>
+        <h3 class="feature-title">Treuhand-Service</h3>
+        <p class="feature-desc">
+          Der Kaufbetrag liegt bei einem regulierten Treuhandpartner. Auszahlung erst, wenn beide Seiten den Transfer bestätigt haben.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <h3 class="feature-title">Technische Tiefe</h3>
+        <p class="feature-desc">
+          Wir veröffentlichen Code-Qualitäts-Reports, Architektur-Diagramme und Test-Coverage. Käufer wissen, was sie bekommen.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        </div>
+        <h3 class="feature-title">Verträge & NDA</h3>
+        <p class="feature-desc">
+          Standardisierte Asset-Purchase-Agreements, NDAs und Lizenz-Übertragungen — anwaltlich geprüft, digital signiert, sofort einsatzbereit.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3 class="feature-title">Umsatz-Verifikation</h3>
+        <p class="feature-desc">
+          Stripe-, Paddle- und App-Store-Connect-Daten werden automatisch ausgelesen und über 12 Monate retrospektiv geprüft.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <h3 class="feature-title">Reputation & Vertrauen</h3>
+        <p class="feature-desc">
+          Zwei-Wege-Bewertungen für Käufer & Verkäufer. Verifizierte Identitäten, transparente Deal-Historie, keine anonymen Schnäppchenjäger.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+        </div>
+        <h3 class="feature-title">Flexible Deal-Strukturen</h3>
+        <p class="feature-desc">
+          Komplettverkauf, Earn-Out, Anteilsverkauf, Sponsoring-Modelle — du musst nicht dein ganzes Baby abgeben.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEAL FLOW VISUAL ============ -->
+<section style="background: var(--bg-warm); margin: 0 -100vw; padding-left: calc(100vw - 50%); padding-right: calc(100vw - 50%); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <div style="max-width: 1320px; margin: 0 auto; padding: 0 40px;">
+    <div class="deal-flow">
+      <div>
+        <div class="eyebrow">TREUHAND IM DETAIL</div>
+        <h2 style="margin-bottom: 24px;">Geld fließt erst, wenn <em>der Code übergeben ist.</em></h2>
+        <p style="color: var(--ink-soft); font-size: 17px; line-height: 1.6; margin-bottom: 32px; max-width: 480px;">
+          Wir arbeiten mit einem regulierten Treuhandpartner. Der Käufer überweist den Kaufpreis an die Treuhand. Erst wenn der Verkäufer alle vereinbarten Assets übergeben hat und beide Seiten bestätigen, wird das Geld freigegeben — abzüglich unserer Gebühr von 6%.
+        </p>
+        <div style="display:flex; gap: 16px;">
+          <a href="#" class="btn btn-primary">Treuhand-Details ansehen <span>→</span></a>
+          <a href="#" class="btn">FAQ</a>
+        </div>
+      </div>
+
+      <div class="deal-visual">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div style="font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-mute); letter-spacing: 0.1em; text-transform: uppercase;">Deal #ATL-2026-0814</div>
+          <div style="font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--success);">● AKTIV</div>
+        </div>
+        <div style="font-family: 'Fraunces', serif; font-size: 24px; letter-spacing: -0.02em; margin-bottom: 4px;">DocuMind AI</div>
+        <div style="color: var(--ink-mute); font-size: 13px; margin-bottom: 20px;">Käufer: Helix Capital · Verkäufer: Aydan K.</div>
+
+        <div class="deal-step done">
+          <div class="deal-step-icon">✓</div>
+          <div class="deal-step-content">
+            <div class="deal-step-name">NDA signiert</div>
+            <div class="deal-step-meta">14.05.2026 · 09:24</div>
+          </div>
+        </div>
+        <div class="deal-step done">
+          <div class="deal-step-icon">✓</div>
+          <div class="deal-step-content">
+            <div class="deal-step-name">Due Diligence abgeschlossen</div>
+            <div class="deal-step-meta">17.05.2026 · 16:48</div>
+          </div>
+        </div>
+        <div class="deal-step done">
+          <div class="deal-step-icon">✓</div>
+          <div class="deal-step-content">
+            <div class="deal-step-name">Kaufvertrag signiert</div>
+            <div class="deal-step-meta">19.05.2026 · 11:02</div>
+          </div>
+        </div>
+        <div class="deal-step active">
+          <div class="deal-step-icon">●</div>
+          <div class="deal-step-content">
+            <div class="deal-step-name">Asset-Transfer läuft</div>
+            <div class="deal-step-meta">GitHub · AWS · Stripe · Domain</div>
+          </div>
+        </div>
+        <div class="deal-step">
+          <div class="deal-step-icon">04</div>
+          <div class="deal-step-content">
+            <div class="deal-step-name">Treuhand-Freigabe</div>
+            <div class="deal-step-meta">Beide Parteien müssen bestätigen</div>
+          </div>
+        </div>
+
+        <div class="escrow-card">
+          <div>
+            <div class="escrow-label">In Treuhand</div>
+            <div class="escrow-amount">€164.000</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="escrow-label">Atelier-Gebühr</div>
+            <div style="font-family: 'Geist Mono', monospace; font-size: 13px; color: var(--ink-soft);">6,0% · €9.840</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUDIENCE ============ -->
+<section id="sellers">
+  <div class="container">
+    <div class="audience-split">
+      <div class="audience-card">
+        <div class="audience-tag">Für Entwickler</div>
+        <h3>Du hast etwas gebaut.<br><em>Verkauf es richtig.</em></h3>
+        <p>Dein Side-Project hat Traction, aber dir fehlt die Zeit oder der Wille, es weiter auszubauen? Übergib es an jemanden, der es weiterführt — zum fairen Preis, ohne juristisches Chaos.</p>
+        <ul class="audience-list">
+          <li>Kostenlose Bewertung deines Projekts</li>
+          <li>Anonyme Listings möglich</li>
+          <li>6% Gebühr nur bei Erfolg</li>
+          <li>Earn-Out & Anteils-Optionen</li>
+        </ul>
+        <a href="#" class="btn btn-light">Projekt einstellen <span>→</span></a>
+      </div>
+
+      <div class="audience-card alt">
+        <div class="audience-tag">Für Käufer</div>
+        <h3>Bau nicht neu.<br><em>Kauf etwas Fertiges.</em></h3>
+        <p>Du suchst ein Produkt, ein Team oder eine Tech-Basis? Auf Atelier findest du fertige, geprüfte Software-Projekte mit echten Nutzern und nachweisbaren Umsätzen.</p>
+        <ul class="audience-list">
+          <li>Vollständige Due-Diligence-Reports</li>
+          <li>Verifizierte Umsätze & Metriken</li>
+          <li>Treuhand-gesicherter Kaufprozess</li>
+          <li>Optional: 90 Tage Handover-Support</li>
+        </ul>
+        <a href="#" class="btn btn-light">Marktplatz ansehen <span>→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section style="padding: 60px 0 120px;">
+  <div class="container" style="text-align:center; max-width: 800px; margin: 0 auto;">
+    <div class="eyebrow" style="justify-content: center;">EINE KURATIERTE BÖRSE FÜR SOFTWARE</div>
+    <h2 style="font-size: clamp(48px, 6vw, 80px); margin-bottom: 28px;">
+      Wenn Code seinen <em>nächsten Ort</em> sucht.
+    </h2>
+    <p style="font-size: 18px; color: var(--ink-soft); max-width: 560px; margin: 0 auto 40px;">
+      Atelier ist die Plattform, auf der Entwickler*innen und Käufer*innen einander finden — ohne Schnäppchenjäger, ohne juristisches Risiko, mit echtem Respekt für die Arbeit.
+    </p>
+    <div style="display:flex; gap: 16px; justify-content: center;">
+      <a href="#" class="btn btn-primary">Jetzt Account erstellen <span>→</span></a>
+      <a href="#" class="btn">Demo buchen</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo"><span class="logo-mark"></span>Atelier</div>
+        <p class="footer-tag">Wo Software den Besitzer wechselt — kuratiert, abgesichert, mit Respekt.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Marktplatz</h4>
+        <ul>
+          <li><a href="#">Alle Listings</a></li>
+          <li><a href="#">SaaS</a></li>
+          <li><a href="#">Mobile Apps</a></li>
+          <li><a href="#">Dev-Tools</a></li>
+          <li><a href="#">KI-Projekte</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Verkaufen</h4>
+        <ul>
+          <li><a href="#">Projekt einstellen</a></li>
+          <li><a href="#">Bewertung</a></li>
+          <li><a href="#">Gebühren</a></li>
+          <li><a href="#">Verkäufer-FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Rechtliches</h4>
+        <ul>
+          <li><a href="#">Treuhand-AGB</a></li>
+          <li><a href="#">Musterverträge</a></li>
+          <li><a href="#">NDA-Templates</a></li>
+          <li><a href="#">Datenschutz</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Über uns</h4>
+        <ul>
+          <li><a href="#">Manifest</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Kontakt</a></li>
+          <li><a href="#">Karriere</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 Atelier · Düsseldorf, Berlin, Lissabon</div>
+      <div style="font-family: 'Geist Mono', monospace;">v1.2.0 · Made with care for the craft</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

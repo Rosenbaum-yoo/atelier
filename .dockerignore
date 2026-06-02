@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.github
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+npm-debug.log*
+.vscode
+.idea
+.claude
+docs
+atelier.html

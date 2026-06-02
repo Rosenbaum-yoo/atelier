@@ -1,0 +1,42 @@
+# Self-host path: Traefik load balancer in front of N web replicas.
+# This is the "flip the switch" option for an enterprise tenant who needs
+# on-prem / isolated hosting. Day-to-day hosting is Cloudflare Pages (see SCALING.md).
+#
+#   cd infra
+#   docker compose up -d --build --scale web=2
+#
+# Traefik round-robins across every "web" replica automatically.
+
+services:
+  traefik:
+    image: traefik:v3.1
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:-}
+    expose:
+      - "80"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.atelier.rule=Host(`localhost`)
+      - traefik.http.routers.atelier.entrypoints=web
+      - traefik.http.services.atelier.loadbalancer.server.port=80
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
