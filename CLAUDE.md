@@ -56,7 +56,7 @@ Listings IMMER aus `src/data/listings.ts` (bis Backend-Anbindung). Karten via `<
 - [x] Enterprise-Fundament: `.gitignore`/`.env.example` · Supabase-Schema+RLS (0001) · Docker/Traefik · CI · Doku-Suite · `src/lib/supabase.ts`
 - [x] Git: lokales Repo + privates GitHub-Repo + Push → https://github.com/Rosenbaum-yoo/atelier (gh 2.93.0). CI läuft bei Push.
 - [ ] Supabase Cloud Projekt anlegen + `db push` (Owner-Schritt) · Listings aus DB laden
-- [ ] Cloudflare Pages verbinden (Owner-Schritt)
+- [x] **Cloudflare Pages live** → https://atelier-a9e.pages.dev · Auto-Deploy bei jedem Push auf `main` · SPA-Fallback via `public/_redirects`
 - [x] Marktplatz funktional: Filter (Kategorie/Modell/Verkaufsoption/Tech) + Sort, Counts aus echten Daten, Empty-State · **Anteile/Invest first-class** (`saleType`, neue GmbH-Beteiligung `lumen-analytics`)
 - [ ] Dealroom · Verkäufer-Flow + Dashboard · Auth · Preis-Range-Slider funktional
 
@@ -64,4 +64,5 @@ Listings IMMER aus `src/data/listings.ts` (bis Backend-Anbindung). Karten via `<
 - 2026-06-02: Init. CSS via Shell aus atelier.html extrahiert (0 Output-Token). Landing datengetrieben.
 - 2026-06-02: Enterprise-Fundament gelegt (Supabase+RLS, Docker/Traefik, CI, Doku, ADR 0001). Entscheidung: **kein Monorepo** jetzt (Single-App im Root, `supabase/`+`infra/`+`docs/` daneben) — Churn ohne Nutzen. Hosting-Empfehlung: **Cloudflare Pages + Supabase Cloud**, Docker als Schalter. gh-CLI nicht installiert → Push ist Owner-Schritt.
 - 2026-06-03: gh 2.93.0 via winget installiert; Owner per GitHub Device-Flow eingeloggt (Account `Rosenbaum-yoo`). `gh repo create atelier --private --source=. --push` → privates Repo live, `main` getrackt, CI aktiv. Offene Owner-Schritte für Go-Live: Supabase-Projekt anlegen + `db push`, Cloudflare Pages verbinden.
+- 2026-06-03: **Go-Live.** Owner hat Cloudflare Pages mit dem GitHub-Repo verbunden (Framework-Preset „React (Vite)" auto-erkannt, Build `npm run build`, Output `dist`, Branch `main`). Seite live unter https://atelier-a9e.pages.dev, Auto-Deploy bei Push. Danach Prod-spezifischen Bug gefixt: BrowserRouter-Deep-Links (`/listing/:id`) lieferten auf Pages 404 → `public/_redirects` mit `/* /index.html 200` (Vite kopiert nach `dist/`). Verifiziert: `dist/_redirects` wird gebaut.
 - 2026-06-03: Marktplatz funktional gemacht. Strukturierte Felder in `listings.ts` (`kind`/`revenueModel`/`saleType`/`monthlyRevenue`/`priceValue`/`listedAt`/`equity?`) + Label-Maps. Neue `Marketplace.tsx` (Filter/Sort/Empty-State, Counts **aus echten Daten** statt Fake-Zahlen, a11y via role=button+tabIndex). `Home.tsx` nutzt `<Marketplace/>`, Inline-Sektion entfernt. **Invest first-class**: neue GmbH-Beteiligung `lumen-analytics` (20% Anteile, €240k). Design 1:1 gehalten (nur bestehende Klassen). Bug gefixt: `typecheck`-Script war `tsc -b --noEmit` (TS6310 mit Composite-Ref) → `tsc -b`. Browser-Smoke-Test (Preview): Filter „Anteile/Sponsoring“ → 7→2 Listings, Design intakt.
