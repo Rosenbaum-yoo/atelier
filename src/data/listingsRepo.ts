@@ -51,3 +51,56 @@ export async function fetchListings(): Promise<Listing[]> {
     return staticListings
   }
 }
+
+// Single listing for the detail page. Tries Supabase by slug, falls back to the
+// static entry so deep-links keep working offline / pre-seed. Returns null only
+// when the slug exists in neither (genuine 404).
+export async function fetchListingBySlug(slug: string): Promise<Listing | null> {
+  const fallback = () => staticListings.find((l) => l.id === slug) ?? null
+  if (!isSupabaseConfigured) return fallback()
+  try {
+    const { data, error } = await getSupabase()
+      .from('listings')
+      .select(COLUMNS)
+      .eq('slug', slug)
+      .maybeSingle()
+    if (error || !data) return fallback()
+    return rowToListing(data)
+  } catch {
+    return fallback()
+  }
+}
+
+export type OwnerListing = {
+  slug: string
+  title: string
+  status: 'draft' | 'published'
+  price_num: string
+  kind: string
+  listed_at: string
+}
+
+// Owner view: every listing of one org, any status (RLS lets an org read its own
+// unpublished rows). Used by the dashboard, never falls back to static data.
+export async function fetchOrgListings(orgId: string): Promise<OwnerListing[]> {
+  const { data, error } = await getSupabase()
+    .from('listings')
+    .select('slug, title, status, price_num, kind, listed_at')
+    .eq('org_id', orgId)
+    .order('listed_at', { ascending: false })
+  if (error) throw error
+  return (data as OwnerListing[]) ?? []
+}
+
+export async function setListingStatus(
+  slug: string,
+  status: 'draft' | 'published',
+): Promise<void> {
+  const { error } = await getSupabase().from('listings').update({ status }).eq('slug', slug)
+  if (error) throw error
+}
+
+export async function deleteListing(slug: string): Promise<void> {
+  const { error } = await getSupabase().from('listings').delete().eq('slug', slug)
+  if (error) throw error
+}

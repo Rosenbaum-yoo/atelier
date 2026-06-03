@@ -1,8 +1,12 @@
-import { Link, useParams } from 'react-router-dom'
+import { useState, useEffect, type FormEvent } from 'react'
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ListingCard from '../components/ListingCard'
-import { getListing, listings } from '../data/listings'
+import type { Listing } from '../data/listings'
+import { fetchListingBySlug, fetchListings } from '../data/listingsRepo'
+import { useAuth } from '../state/AuthContext'
+import { createDeal, fetchListingIdBySlug } from '../data/dealsRepo'
 
 const card = {
   background: 'var(--bg-card)',
@@ -51,7 +55,83 @@ const thumbs = ['Dashboard', 'Workflow', 'Mobile']
 
 export default function ListingDetail() {
   const { id } = useParams()
-  const l = getListing(id)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { session } = useAuth()
+
+  const [l, setL] = useState<Listing | null>(null)
+  const [related, setRelated] = useState<Listing[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const [offerOpen, setOfferOpen] = useState(false)
+  const [amount, setAmount] = useState('')
+  const [message, setMessage] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let alive = true
+    setLoading(true)
+    Promise.all([fetchListingBySlug(id ?? ''), fetchListings()])
+      .then(([listing, all]) => {
+        if (!alive) return
+        setL(listing)
+        setRelated(all.filter((x) => x.id !== id).slice(0, 3))
+      })
+      .finally(() => {
+        if (alive) setLoading(false)
+      })
+    return () => {
+      alive = false
+    }
+  }, [id])
+
+  function startOffer() {
+    if (!session) {
+      navigate('/login', { state: { from: location.pathname } })
+      return
+    }
+    setError(null)
+    setOfferOpen((v) => !v)
+  }
+
+  async function submitOffer(e: FormEvent) {
+    e.preventDefault()
+    if (!session || !l) return
+    setError(null)
+    setBusy(true)
+    try {
+      const listingId = await fetchListingIdBySlug(l.id)
+      if (!listingId) {
+        setError('Angebote sind erst verfügbar, sobald dieses Projekt live in der Datenbank ist.')
+        return
+      }
+      const offerAmount = amount.trim() ? Math.max(0, Math.round(Number(amount))) : null
+      await createDeal({
+        listingId,
+        buyerId: session.user.id,
+        offerAmount,
+        message: message.trim() || null,
+      })
+      navigate('/dealroom')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Angebot konnte nicht gesendet werden.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <>
+        <Nav />
+        <div className="auth-gate">
+          <div className="spinner" aria-label="Wird geladen" />
+        </div>
+        <Footer />
+      </>
+    )
+  }
 
   if (!l) {
     return (
@@ -71,8 +151,6 @@ export default function ListingDetail() {
       </>
     )
   }
-
-  const related = listings.filter((x) => x.id !== l.id).slice(0, 3)
 
   return (
     <>
@@ -191,8 +269,47 @@ export default function ListingDetail() {
                 <div style={{ fontFamily: "'Fraunces', serif", fontSize: 44, fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1 }}>{l.price.num}</div>
                 <div style={{ color: 'var(--ink-mute)', fontSize: 13, marginTop: 6 }}>{l.price.multiple}</div>
 
-                <a href="#" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 22 }}>Dealroom anfragen <span>→</span></a>
-                <a href="#" className="btn" style={{ width: '100%', justifyContent: 'center', marginTop: 10 }}>Frage an Verkäufer</a>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  style={{ width: '100%', justifyContent: 'center', marginTop: 22 }}
+                  onClick={startOffer}
+                >
+                  {offerOpen ? 'Abbrechen' : <>Angebot machen <span>→</span></>}
+                </button>
+                <Link to="/dealroom" className="btn" style={{ width: '100%', justifyContent: 'center', marginTop: 10 }}>Zum Dealroom</Link>
+
+                {offerOpen && (
+                  <form onSubmit={submitOffer} style={{ marginTop: 18, paddingTop: 18, borderTop: '1px dashed var(--line)' }} noValidate>
+                    {error && <div className="alert alert-error">{error}</div>}
+                    <div className="field">
+                      <label htmlFor="offer-amount">Dein Angebot (€)</label>
+                      <input
+                        id="offer-amount"
+                        className="input"
+                        type="number"
+                        min="0"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        placeholder={l.price.num}
+                      />
+                      <span className="field-hint">Leer lassen = zum genannten Preis.</span>
+                    </div>
+                    <div className="field">
+                      <label htmlFor="offer-message">Nachricht</label>
+                      <textarea
+                        id="offer-message"
+                        className="textarea"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Stell dich kurz vor — warum passt du zu diesem Projekt?"
+                      />
+                    </div>
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} disabled={busy}>
+                      {busy ? <span className="spinner" /> : <>Angebot senden <span>→</span></>}
+                    </button>
+                  </form>
+                )}
 
                 <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px dashed var(--line)', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2" style={{ width: 16, height: 16, flexShrink: 0, marginTop: 2 }}><path d="M9 12l2 2 4-4" /><path d="M12 2L2 7v6c0 5 3.5 9.5 10 11 6.5-1.5 10-6 10-11V7l-10-5z" /></svg>

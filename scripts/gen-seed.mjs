@@ -36,9 +36,16 @@ const values = listings.map((l) => {
   ].join(', ') + ')'
 })
 
+const upsert = cols
+  .filter((c) => c !== 'slug')
+  .map((c) => `${c} = excluded.${c}`)
+  .join(', ')
+
 const sql = `-- seed.sql — GENERATED from src/data/listings.ts. Do not edit by hand.
 -- Regenerate: node scripts/gen-seed.mjs
--- Idempotent: safe to run more than once (on conflict do nothing).
+-- Idempotent & self-healing: re-running overwrites the seed rows from the
+-- single source of truth (on conflict do update), so encoding/content drift
+-- in the seeded rows is corrected on every apply.
 
 insert into public.orgs (id, name, slug)
 values ('${ORG}', 'Atelier', 'atelier')
@@ -47,7 +54,8 @@ on conflict (id) do nothing;
 insert into public.listings (${cols.join(', ')})
 values
 ${values.join(',\n')}
-on conflict (slug) do nothing;
+on conflict (slug) do update set
+  ${upsert};
 `
 
 await writeFile(new URL('supabase/seed.sql', root), sql, 'utf8')

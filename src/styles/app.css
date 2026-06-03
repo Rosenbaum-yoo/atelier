@@ -1,0 +1,324 @@
+/* app.css — screens that don't exist in the locked atelier.css (auth, seller,
+   dashboard, dealroom). COLORS: only existing --tokens. FONTS: the three locked
+   families. RADII: 999px pills / 4–6px cards, per design-lock. Never invents. */
+
+/* ── Page shells ─────────────────────────────────────────────── */
+.app-main {
+  min-height: 70vh;
+  padding: 64px 0 96px;
+}
+.page-narrow {
+  max-width: 520px;
+  margin: 0 auto;
+}
+.page-head {
+  margin-bottom: 32px;
+}
+.page-head h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 34px;
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 8px 0 10px;
+}
+.page-head h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+.page-head p {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 60ch;
+}
+
+/* ── Forms ───────────────────────────────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+.field > label {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.input,
+.textarea,
+.select {
+  font-family: 'Geist', sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px 14px;
+  width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.textarea {
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.55;
+}
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--ink-mute);
+}
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.field-hint {
+  font-size: 12px;
+  color: var(--ink-mute);
+  line-height: 1.5;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.btn[disabled],
+.btn[aria-disabled='true'] {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* ── Auth card ───────────────────────────────────────────────── */
+.auth-wrap {
+  display: flex;
+  justify-content: center;
+}
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 38px 34px 32px;
+}
+.auth-head {
+  text-align: center;
+  margin-bottom: 26px;
+}
+.auth-head .eyebrow {
+  justify-content: center;
+}
+.auth-head h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  color: var(--ink);
+  margin: 10px 0 6px;
+}
+.auth-head h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+.auth-head p {
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+.auth-switch {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.text-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 500;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.text-link:hover {
+  color: var(--accent-deep);
+}
+
+/* ── Inline alerts ───────────────────────────────────────────── */
+.alert {
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+}
+.alert-error {
+  background: color-mix(in srgb, var(--accent-soft) 45%, var(--bg-card));
+  border-color: var(--accent-soft);
+  color: var(--accent-deep);
+}
+.alert-ok {
+  background: color-mix(in srgb, var(--success) 14%, var(--bg-card));
+  border-color: color-mix(in srgb, var(--success) 40%, var(--line));
+  color: var(--success);
+}
+
+/* ── Loading / gate ──────────────────────────────────────────── */
+.auth-gate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+.spinner {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 3px solid var(--line);
+  border-top-color: var(--accent);
+  animation: spin 0.7s linear infinite;
+}
+.btn .spinner {
+  width: 15px;
+  height: 15px;
+  border-width: 2px;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Dashboard / data rows ───────────────────────────────────── */
+.dash-section {
+  margin-top: 44px;
+}
+.dash-section:first-of-type {
+  margin-top: 0;
+}
+.dash-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.dash-section-head h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  color: var(--ink);
+}
+.row-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.row-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 16px 18px;
+}
+.row-main {
+  flex: 1;
+  min-width: 0;
+}
+.row-title {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+.row-meta {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-mute);
+}
+.row-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* compact buttons for dense rows */
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 12px;
+}
+
+/* ── Status pills ────────────────────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  background: var(--bg-warm);
+  white-space: nowrap;
+}
+.pill-published,
+.pill-accepted {
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 40%, var(--line));
+  background: color-mix(in srgb, var(--success) 12%, var(--bg-card));
+}
+.pill-open {
+  color: var(--accent-deep);
+  border-color: var(--accent-soft);
+  background: color-mix(in srgb, var(--accent-soft) 35%, var(--bg-card));
+}
+.pill-draft,
+.pill-withdrawn {
+  color: var(--ink-mute);
+}
+.pill-declined {
+  color: var(--accent-deep);
+  border-color: var(--accent-soft);
+}
+
+/* ── Empty states ────────────────────────────────────────────── */
+.empty-block {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--ink-mute);
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  background: var(--bg-card);
+}
+.empty-block p {
+  margin-bottom: 14px;
+}
+
+@media (max-width: 560px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .row-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .row-actions {
+    justify-content: flex-end;
+  }
+}

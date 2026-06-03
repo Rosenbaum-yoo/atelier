@@ -1,6 +1,15 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../state/AuthContext'
 
 export default function Nav() {
+  const { session, signOut } = useAuth()
+  const navigate = useNavigate()
+
+  async function onSignOut() {
+    await signOut()
+    navigate('/')
+  }
+
   return (
     <nav>
       <div className="container nav-inner">
@@ -16,8 +25,18 @@ export default function Nav() {
           <li><a href="/#about">Über uns</a></li>
         </ul>
         <div className="nav-cta">
-          <a href="#" className="btn">Anmelden</a>
-          <a href="/#sellers" className="btn btn-primary">Projekt einstellen <span>↗</span></a>
+          {session ? (
+            <>
+              <Link to="/dashboard" className="btn">Dashboard</Link>
+              <button type="button" className="btn" onClick={onSignOut}>Abmelden</button>
+              <Link to="/sell" className="btn btn-primary">Projekt einstellen <span>↗</span></Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn">Anmelden</Link>
+              <Link to="/sell" className="btn btn-primary">Projekt einstellen <span>↗</span></Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
