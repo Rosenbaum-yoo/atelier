@@ -31,15 +31,28 @@ create table public.listings (
   status         text not null default 'draft' check (status in ('draft', 'published', 'archived')),
   subtitle       text,
   description    text,
+  model          text,
+  about          text,
+  icon           text,
+  icon_class     text,
   price_num      text,
   price_type     text,
   price_multiple text,
-  data           jsonb not null default '{}'::jsonb,  -- tech[], metrics[], financials[], highlights[]
+  kind            text not null default 'saas' check (kind in ('saas','ios','android','web','devtool','game','ai')),
+  revenue_model   text not null default 'mrr'  check (revenue_model in ('mrr','onetime','iap','ads')),
+  sale_type       text not null default 'full' check (sale_type in ('full','shares','license')),
+  monthly_revenue integer not null default 0,
+  price_value     integer not null default 0,
+  listed_at       date not null default current_date,
+  data           jsonb not null default '{}'::jsonb,  -- tech[], metrics[], highlights[], financials[], seller{}, badges[], equity?
   created_at     timestamptz not null default now(),
   updated_at     timestamptz not null default now()
 );
-create index listings_org_id_idx on public.listings (org_id);
-create index listings_status_idx on public.listings (status);
+create index listings_org_id_idx    on public.listings (org_id);
+create index listings_status_idx    on public.listings (status);
+create index listings_kind_idx      on public.listings (kind);
+create index listings_sale_type_idx on public.listings (sale_type);
+create index listings_listed_at_idx on public.listings (listed_at desc);
 
 -- ── Helper: the calling user's org (null for anonymous visitors) ──
 create or replace function public.current_org_id()

@@ -1,4 +1,4 @@
-import { useMemo, useState, type KeyboardEvent } from 'react'
+import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import ListingCard from './ListingCard'
 import {
   listings,
@@ -10,6 +10,7 @@ import {
   type RevenueModel,
   type SaleType,
 } from '../data/listings'
+import { fetchListings } from '../data/listingsRepo'
 
 type SortKey = 'featured' | 'newest' | 'price-asc' | 'price-desc' | 'mrr'
 
@@ -54,14 +55,25 @@ function activate(fn: () => void) {
 const fmtPrice = (n: number) => '€' + n.toLocaleString('de-DE')
 
 export default function Marketplace() {
+  const [data, setData] = useState<Listing[]>(listings)
   const [kind, setKind] = useState<ListingKind | 'all'>('all')
   const [model, setModel] = useState<RevenueModel | null>(null)
   const [sale, setSale] = useState<SaleType | null>(null)
   const [tech, setTech] = useState<string | null>(null)
   const [sort, setSort] = useState<SortKey>('featured')
 
+  useEffect(() => {
+    let alive = true
+    fetchListings().then((rows) => {
+      if (alive) setData(rows)
+    })
+    return () => {
+      alive = false
+    }
+  }, [])
+
   const filtered = useMemo(() => {
-    const out = listings.filter((l) => {
+    const out = data.filter((l) => {
       if (kind !== 'all' && l.kind !== kind) return false
       if (model && l.revenueModel !== model) return false
       if (sale && l.saleType !== sale) return false
@@ -85,14 +97,14 @@ export default function Marketplace() {
           return 0
       }
     })
-  }, [kind, model, sale, tech, sort])
+  }, [data, kind, model, sale, tech, sort])
 
-  const kindCount = (k: ListingKind) => listings.filter((l) => l.kind === k).length
-  const modelCount = (m: RevenueModel) => listings.filter((l) => l.revenueModel === m).length
-  const saleCount = (s: SaleType) => listings.filter((l) => l.saleType === s).length
-  const techCount = (g: { match: string[] }) => listings.filter((l) => techMatch(l, g.match)).length
+  const kindCount = (k: ListingKind) => data.filter((l) => l.kind === k).length
+  const modelCount = (m: RevenueModel) => data.filter((l) => l.revenueModel === m).length
+  const saleCount = (s: SaleType) => data.filter((l) => l.saleType === s).length
+  const techCount = (g: { match: string[] }) => data.filter((l) => techMatch(l, g.match)).length
 
-  const prices = listings.map((l) => l.priceValue)
+  const prices = data.map((l) => l.priceValue)
   const minPrice = Math.min(...prices)
   const maxPrice = Math.max(...prices)
 
@@ -126,7 +138,7 @@ export default function Marketplace() {
                 {...activate(() => setKind('all'))}
               >
                 <span>Alle</span>
-                <span className="count">{listings.length}</span>
+                <span className="count">{data.length}</span>
               </div>
               {kindOrder.map((k) => (
                 <div
