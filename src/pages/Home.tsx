@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
-import ListingCard from '../components/ListingCard'
-import { listings } from '../data/listings'
+import Marketplace from '../components/Marketplace'
 
 const steps = [
   {
@@ -161,89 +160,7 @@ export default function Home() {
       </section>
 
       {/* MARKETPLACE */}
-      <section id="marketplace">
-        <div className="container">
-          <div className="section-head">
-            <div className="section-head-left">
-              <div className="eyebrow">DER MARKTPLATZ</div>
-              <h2>Vollendete Werke, <em>sofort verfügbar.</em></h2>
-              <p className="section-sub">
-                Jedes Listing wird technisch geprüft. Wir validieren Umsätze, dokumentieren den Tech-Stack und schauen uns den Code an, bevor wir ein Projekt freigeben.
-              </p>
-            </div>
-            <a href="#marketplace" className="btn">Alle ansehen <span>→</span></a>
-          </div>
-
-          <div className="marketplace-grid">
-            <aside className="filter-panel">
-              <div className="filter-group">
-                <div className="filter-title">Kategorie</div>
-                <div className="filter-option active"><span>Alle</span><span className="count">1247</span></div>
-                <div className="filter-option"><span>SaaS</span><span className="count">412</span></div>
-                <div className="filter-option"><span>Mobile App (iOS)</span><span className="count">238</span></div>
-                <div className="filter-option"><span>Mobile App (Android)</span><span className="count">194</span></div>
-                <div className="filter-option"><span>Web-App</span><span className="count">186</span></div>
-                <div className="filter-option"><span>Dev-Tool / CLI</span><span className="count">87</span></div>
-                <div className="filter-option"><span>Spiel</span><span className="count">76</span></div>
-                <div className="filter-option"><span>KI / ML</span><span className="count">54</span></div>
-              </div>
-
-              <div className="filter-group">
-                <div className="filter-title">Preis</div>
-                <div className="range-track">
-                  <div className="range-fill"></div>
-                  <div className="range-handle left"></div>
-                  <div className="range-handle right"></div>
-                </div>
-                <div className="range-vals"><span>€2.500</span><span>€180.000</span></div>
-              </div>
-
-              <div className="filter-group">
-                <div className="filter-title">Geschäftsmodell</div>
-                <div className="filter-option active"><span>Mit MRR</span><span className="count">684</span></div>
-                <div className="filter-option"><span>One-Time Sales</span><span className="count">312</span></div>
-                <div className="filter-option"><span>In-App Käufe</span><span className="count">178</span></div>
-                <div className="filter-option"><span>Ad-finanziert</span><span className="count">73</span></div>
-              </div>
-
-              <div className="filter-group">
-                <div className="filter-title">Verkaufsoption</div>
-                <div className="filter-option"><span>Komplettverkauf</span><span className="count">932</span></div>
-                <div className="filter-option"><span>Anteile / Sponsoring</span><span className="count">214</span></div>
-                <div className="filter-option"><span>Lizenz-Übertragung</span><span className="count">101</span></div>
-              </div>
-
-              <div className="filter-group">
-                <div className="filter-title">Tech-Stack</div>
-                <div className="filter-option"><span>React / Next.js</span><span className="count">287</span></div>
-                <div className="filter-option"><span>Swift / iOS</span><span className="count">156</span></div>
-                <div className="filter-option"><span>Vue / Nuxt</span><span className="count">98</span></div>
-                <div className="filter-option"><span>Python / Django</span><span className="count">87</span></div>
-                <div className="filter-option"><span>Flutter</span><span className="count">73</span></div>
-              </div>
-            </aside>
-
-            <div>
-              <div className="listings-toolbar">
-                <div className="listings-count">1.247 PROJEKTE · GEPRÜFT</div>
-                <div className="listings-sort">
-                  <span className="active">Empfohlen</span>
-                  <span>Neueste</span>
-                  <span>Preis ↑</span>
-                  <span>Preis ↓</span>
-                  <span>MRR</span>
-                </div>
-              </div>
-
-              <div className="listings">
-                {listings.map((l) => (
-                  <ListingCard key={l.id} listing={l} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Marketplace />
 
       {/* HOW IT WORKS */}
       <section id="how" className="how-section">

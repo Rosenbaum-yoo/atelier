@@ -12,6 +12,33 @@ export interface Metric {
   trend?: string
 }
 
+export type ListingKind = 'saas' | 'ios' | 'android' | 'web' | 'devtool' | 'game' | 'ai'
+export type RevenueModel = 'mrr' | 'onetime' | 'iap' | 'ads'
+export type SaleType = 'full' | 'shares' | 'license'
+
+export const kindLabels: Record<ListingKind, string> = {
+  saas: 'SaaS',
+  ios: 'Mobile App (iOS)',
+  android: 'Mobile App (Android)',
+  web: 'Web-App',
+  devtool: 'Dev-Tool / CLI',
+  game: 'Spiel',
+  ai: 'KI / ML',
+}
+
+export const revenueModelLabels: Record<RevenueModel, string> = {
+  mrr: 'Mit MRR',
+  onetime: 'One-Time Sales',
+  iap: 'In-App Käufe',
+  ads: 'Ad-finanziert',
+}
+
+export const saleTypeLabels: Record<SaleType, string> = {
+  full: 'Komplettverkauf',
+  shares: 'Anteile / Sponsoring',
+  license: 'Lizenz-Übertragung',
+}
+
 export interface Listing {
   id: string
   icon: string
@@ -29,11 +56,24 @@ export interface Listing {
   highlights: string[]
   financials: Metric[]
   about: string
+  kind: ListingKind
+  revenueModel: RevenueModel
+  saleType: SaleType
+  monthlyRevenue: number
+  priceValue: number
+  listedAt: string
+  equity?: { percent: number; valuation: string }
 }
 
 export const listings: Listing[] = [
   {
     id: 'pixelcraft-studio',
+    kind: 'ios',
+    revenueModel: 'onetime',
+    saleType: 'full',
+    monthlyRevenue: 2180,
+    priceValue: 32500,
+    listedAt: '2026-05-12',
     icon: 'P',
     iconClass: 'icon-1',
     title: 'PixelCraft Studio',
@@ -72,6 +112,12 @@ export const listings: Listing[] = [
   },
   {
     id: 'documind-ai',
+    kind: 'ai',
+    revenueModel: 'mrr',
+    saleType: 'full',
+    monthlyRevenue: 11400,
+    priceValue: 164000,
+    listedAt: '2026-05-20',
     icon: 'D',
     iconClass: 'icon-2',
     title: 'DocuMind AI',
@@ -107,6 +153,12 @@ export const listings: Listing[] = [
   },
   {
     id: 'habitcircle',
+    kind: 'android',
+    revenueModel: 'iap',
+    saleType: 'full',
+    monthlyRevenue: 720,
+    priceValue: 9800,
+    listedAt: '2026-05-25',
     icon: 'H',
     iconClass: 'icon-3',
     title: 'HabitCircle',
@@ -142,6 +194,12 @@ export const listings: Listing[] = [
   },
   {
     id: 'vendorvault',
+    kind: 'saas',
+    revenueModel: 'mrr',
+    saleType: 'shares',
+    monthlyRevenue: 4890,
+    priceValue: 67000,
+    listedAt: '2026-05-18',
     icon: 'V',
     iconClass: 'icon-4',
     title: 'VendorVault',
@@ -180,6 +238,12 @@ export const listings: Listing[] = [
   },
   {
     id: 'codereview-bot',
+    kind: 'devtool',
+    revenueModel: 'mrr',
+    saleType: 'full',
+    monthlyRevenue: 1620,
+    priceValue: 18400,
+    listedAt: '2026-05-08',
     icon: 'C',
     iconClass: 'icon-5',
     title: 'CodeReview Bot',
@@ -215,6 +279,12 @@ export const listings: Listing[] = [
   },
   {
     id: 'rhythmica',
+    kind: 'game',
+    revenueModel: 'iap',
+    saleType: 'full',
+    monthlyRevenue: 1420,
+    priceValue: 24000,
+    listedAt: '2026-05-15',
     icon: 'R',
     iconClass: 'icon-6',
     title: 'Rhythmica',
@@ -247,6 +317,51 @@ export const listings: Listing[] = [
     ],
     about:
       'Rhythmica ist ein handgemachtes Indie-Rhythm-Spiel mit eigener Metal-Engine und einem App-Store-Featured-Spot in der Historie. Das starke Review-Profil und die treue Spielerbasis machen es zu einer attraktiven Übernahme für Studios oder Solo-Entwickler.',
+  },
+  {
+    id: 'lumen-analytics',
+    kind: 'web',
+    revenueModel: 'mrr',
+    saleType: 'shares',
+    monthlyRevenue: 21500,
+    priceValue: 240000,
+    listedAt: '2026-05-30',
+    equity: { percent: 20, valuation: '€1,2 Mio.' },
+    icon: 'L',
+    iconClass: 'icon-2',
+    title: 'Lumen Analytics GmbH',
+    category: 'GMBH-BETEILIGUNG · WEB-ANALYTICS',
+    subtitle: 'Profitable Analytics-SaaS als GmbH',
+    model: 'GmbH · Anteilsverkauf',
+    desc: 'Etablierte, profitable Web-Analytics-SaaS als GmbH. Die Gesellschafterin bietet 20% Anteile für €240k zur Wachstumsfinanzierung. Notarielle Anteilsübertragung, sauberer Cap-Table.',
+    tech: ['Vue', 'Nuxt', 'ClickHouse', 'Go'],
+    metrics: [
+      { label: 'MRR', val: '€21.500', trend: '+6%' },
+      { label: 'Anteil', val: '20', small: '%' },
+      { label: 'Bewertung', val: '€1,2M' },
+    ],
+    seller: { name: 'Katrin V.', avatar: 'K', rating: '★ 5.0 · 4 Deals' },
+    price: { num: '€240.000', type: 'Für 20% Anteile', multiple: 'Pre-Money ≈ €1,2 Mio.' },
+    badges: [
+      { label: 'Verifiziert', kind: 'verified' },
+      { label: 'Invest', kind: 'plain' },
+    ],
+    highlights: [
+      '20% GmbH-Anteile, notariell übertragen',
+      'Profitabel: €258k ARR, < 2% Churn',
+      'Sauberer Cap-Table, eine Gesellschafterin',
+      'Wachstumskapital für Vertrieb & Team',
+    ],
+    financials: [
+      { label: 'MRR', val: '€21.500', trend: '+6%' },
+      { label: 'ARR', val: '€258.000' },
+      { label: 'Anteil', val: '20', small: '%' },
+      { label: 'Pre-Money', val: '€1,2M' },
+      { label: 'Churn', val: '1,6', small: '%' },
+      { label: 'EBITDA-Marge', val: '34', small: '%' },
+    ],
+    about:
+      'Lumen Analytics GmbH betreibt eine datenschutzfreundliche Web-Analytics-Plattform mit treuer B2B-Kundschaft und planbar wiederkehrenden Umsätzen. Statt eines Exits sucht die Gründerin eine strategische Beteiligung: 20% der Gesellschaftsanteile werden notariell übertragen, das Kapital fließt in Vertrieb und Teamaufbau. Geprüfte Jahresabschlüsse und ein sauberer Cap-Table liegen für die Due Diligence bereit.',
   },
 ]
 
