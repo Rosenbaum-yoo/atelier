@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import { useAuth } from '../state/AuthContext'
@@ -9,9 +9,12 @@ import {
   updateDealStatus,
   type Deal,
   type DealStatus,
+  type PaymentStatus,
 } from '../data/dealsRepo'
+import { startCheckout, confirmRelease } from '../data/paymentsRepo'
 
 const fmt = (n: number | null) => (n ? '€' + n.toLocaleString('de-DE') : 'Zum Listenpreis')
+const fmtCents = (c: number | null) => (c ? '€' + Math.round(c / 100).toLocaleString('de-DE') : '—')
 
 function statusLabel(s: DealStatus): string {
   switch (s) {
@@ -26,6 +29,15 @@ function statusLabel(s: DealStatus): string {
   }
 }
 
+const paymentPill: Record<PaymentStatus, { cls: string; label: string } | null> = {
+  none: null,
+  pending: { cls: 'pill-open', label: 'Zahlung offen' },
+  held: { cls: 'pill-accepted', label: 'Bezahlt · in Treuhand' },
+  released: { cls: 'pill-published', label: 'Ausgezahlt' },
+  refunded: { cls: 'pill-withdrawn', label: 'Erstattet' },
+  failed: { cls: 'pill-declined', label: 'Zahlung fehlgeschlagen' },
+}
+
 export default function Dealroom() {
   const { user, profile } = useAuth()
   const userId = user?.id ?? null
@@ -35,6 +47,9 @@ export default function Dealroom() {
   const [sellerDeals, setSellerDeals] = useState<Deal[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [busy, setBusy] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
+  const [params, setParams] = useSearchParams()
 
   const load = useCallback(async () => {
     setError(null)
@@ -56,6 +71,23 @@ export default function Dealroom() {
     load()
   }, [load])
 
+  useEffect(() => {
+    if (params.get('paid') === '1') {
+      setNotice('Zahlung erfolgreich. Der Betrag liegt jetzt sicher in der Treuhand, bis du den Erhalt bestätigst.')
+      const next = new URLSearchParams(params)
+      next.delete('paid')
+      setParams(next, { replace: true })
+      const t = setTimeout(() => load(), 2500)
+      return () => clearTimeout(t)
+    }
+    if (params.get('canceled') === '1') {
+      setNotice('Zahlung abgebrochen. Du kannst es jederzeit erneut versuchen.')
+      const next = new URLSearchParams(params)
+      next.delete('canceled')
+      setParams(next, { replace: true })
+    }
+  }, [params, setParams, load])
+
   async function act(id: string, status: DealStatus) {
     setError(null)
     try {
@@ -63,6 +95,31 @@ export default function Dealroom() {
       await load()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Aktion fehlgeschlagen.')
+    }
+  }
+
+  async function pay(id: string) {
+    setError(null)
+    setBusy(id)
+    try {
+      window.location.href = await startCheckout(id)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Zahlung konnte nicht gestartet werden.')
+      setBusy(null)
+    }
+  }
+
+  async function release(id: string) {
+    if (!window.confirm('Bestätigst du, dass du das Projekt vollständig erhalten hast? Danach wird der Betrag an den Verkäufer ausgezahlt — das lässt sich nicht rückgängig machen.')) return
+    setError(null)
+    setBusy(id)
+    try {
+      await confirmRelease(id)
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Freigabe fehlgeschlagen.')
+    } finally {
+      setBusy(null)
     }
   }
 
@@ -79,6 +136,7 @@ export default function Dealroom() {
             <p>Deine gesendeten Angebote und die Angebote, die für deine Projekte eingehen — an einem Ort.</p>
           </div>
 
+          {notice && <div className="alert alert-ok">{notice}</div>}
           {error && <div className="alert alert-error">{error}</div>}
 
           {loading ? (
@@ -118,6 +176,11 @@ export default function Dealroom() {
                           <div className="row-meta">{fmt(d.offer_amount)}</div>
                         </div>
                         <span className={`pill pill-${d.status}`}>{statusLabel(d.status)}</span>
+                        {d.status === 'accepted' && paymentPill[d.payment_status] && (
+                          <span className={`pill ${paymentPill[d.payment_status]!.cls}`}>
+                            {paymentPill[d.payment_status]!.label}
+                          </span>
+                        )}
                         <div className="row-actions">
                           {d.status === 'open' && (
                             <button
@@ -126,6 +189,29 @@ export default function Dealroom() {
                               onClick={() => act(d.id, 'withdrawn')}
                             >
                               Zurückziehen
+                            </button>
+                          )}
+                          {d.status === 'accepted' &&
+                            (d.payment_status === 'none' ||
+                              d.payment_status === 'pending' ||
+                              d.payment_status === 'failed') && (
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-primary"
+                                disabled={busy === d.id}
+                                onClick={() => pay(d.id)}
+                              >
+                                {busy === d.id ? 'Weiterleitung…' : 'Jetzt sicher bezahlen'}
+                              </button>
+                            )}
+                          {d.status === 'accepted' && d.payment_status === 'held' && (
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-primary"
+                              disabled={busy === d.id}
+                              onClick={() => release(d.id)}
+                            >
+                              {busy === d.id ? 'Wird freigegeben…' : 'Erhalt bestätigen & freigeben'}
                             </button>
                           )}
                         </div>
@@ -157,6 +243,11 @@ export default function Dealroom() {
                           )}
                         </div>
                         <span className={`pill pill-${d.status}`}>{statusLabel(d.status)}</span>
+                        {d.status === 'accepted' && paymentPill[d.payment_status] && (
+                          <span className={`pill ${paymentPill[d.payment_status]!.cls}`}>
+                            {paymentPill[d.payment_status]!.label}
+                          </span>
+                        )}
                         <div className="row-actions">
                           {d.status === 'open' && (
                             <>
@@ -175,6 +266,12 @@ export default function Dealroom() {
                                 Ablehnen
                               </button>
                             </>
+                          )}
+                          {d.status === 'accepted' && d.payment_status === 'held' && (
+                            <span className="row-meta">Auszahlung {fmtCents(d.amount_net)} nach Käufer-Bestätigung</span>
+                          )}
+                          {d.status === 'accepted' && d.payment_status === 'released' && (
+                            <span className="row-meta">Ausgezahlt: {fmtCents(d.amount_net)}</span>
                           )}
                         </div>
                       </div>

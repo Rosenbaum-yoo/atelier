@@ -322,3 +322,209 @@
     justify-content: flex-end;
   }
 }
+
+/* ── Legal / Trust Center ────────────────────────────────────── */
+.alert-warn {
+  background: color-mix(in srgb, var(--gold) 16%, var(--bg-card));
+  border-color: color-mix(in srgb, var(--gold) 45%, var(--line));
+  color: var(--accent-deep);
+}
+.legal-updated {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-top: 4px;
+}
+.legal {
+  max-width: 760px;
+}
+.legal h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: 21px;
+  color: var(--ink);
+  margin: 34px 0 10px;
+}
+.legal section:first-of-type h2 {
+  margin-top: 24px;
+}
+.legal p {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 12px;
+  max-width: 68ch;
+}
+.legal ul {
+  margin: 0 0 14px 18px;
+  max-width: 68ch;
+}
+.legal li {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+.legal a {
+  color: var(--accent);
+  text-underline-offset: 2px;
+}
+.legal a:hover {
+  color: var(--accent-deep);
+}
+.legal-index {
+  margin-top: 20px;
+}
+
+/* ── Demo walkthrough (/demo) ────────────────────────────────── */
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 32px;
+}
+.demo-narration {
+  padding-top: 8px;
+}
+.demo-step-no {
+  font-family: 'Fraunces', serif;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--accent-soft);
+  margin-bottom: 14px;
+}
+.demo-step-title {
+  font-family: 'Fraunces', serif;
+  font-size: 30px;
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 10px 0 14px;
+}
+.demo-step-body {
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 46ch;
+}
+.demo-stage {
+  position: relative;
+  background: var(--bg-warm);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 28px;
+  min-height: 220px;
+}
+.demo-stage-tag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.demo-stage-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 20px;
+}
+.demo-stage-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.demo-stage-note {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-mute);
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+}
+.demo-money {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.demo-money-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.demo-money-row span:last-child {
+  font-family: 'Geist Mono', monospace;
+}
+.demo-money-total {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 16px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.demo-money-total.is-paid {
+  color: var(--success);
+}
+.demo-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 18px 0;
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+}
+.demo-dots {
+  display: flex;
+  gap: 9px;
+}
+.demo-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+.demo-dot.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.25);
+}
+.demo-buttons {
+  display: flex;
+  gap: 10px;
+}
+.demo-counter {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-mute);
+  letter-spacing: 0.05em;
+}
+.demo-cta {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+@media (max-width: 720px) {
+  .demo-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .demo-step-no {
+    font-size: 44px;
+  }
+}

@@ -5,6 +5,9 @@ import Login from './pages/Login'
 import Sell from './pages/Sell'
 import Dashboard from './pages/Dashboard'
 import Dealroom from './pages/Dealroom'
+import Demo from './pages/Demo'
+import Trust from './pages/Trust'
+import LegalPage from './components/LegalPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import ScrollToTop from './components/ScrollToTop'
 
@@ -15,6 +18,9 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/listing/:id" element={<ListingDetail />} />
+        <Route path="/demo" element={<Demo />} />
+        <Route path="/recht" element={<Trust />} />
+        <Route path="/recht/:slug" element={<LegalPage />} />
         <Route path="/login" element={<Login />} />
         <Route
           path="/sell"

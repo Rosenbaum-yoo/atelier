@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import { useAuth } from '../state/AuthContext'
@@ -10,6 +10,7 @@ import {
   type OwnerListing,
 } from '../data/listingsRepo'
 import { fetchOrgDeals, type Deal } from '../data/dealsRepo'
+import { fetchEntitlement, startConnectOnboarding, type Entitlement } from '../data/paymentsRepo'
 import { kindLabels, type ListingKind } from '../data/listings'
 
 const statusLabel: Record<string, string> = {
@@ -23,8 +24,11 @@ export default function Dashboard() {
 
   const [listings, setListings] = useState<OwnerListing[]>([])
   const [deals, setDeals] = useState<Deal[]>([])
+  const [entitlement, setEntitlement] = useState<Entitlement | null>(null)
+  const [connecting, setConnecting] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [params, setParams] = useSearchParams()
 
   const load = useCallback(async () => {
     if (!orgId) {
@@ -33,12 +37,14 @@ export default function Dashboard() {
     }
     setError(null)
     try {
-      const [rows, orgDeals] = await Promise.all([
+      const [rows, orgDeals, ent] = await Promise.all([
         fetchOrgListings(orgId),
         fetchOrgDeals(orgId),
+        fetchEntitlement(orgId),
       ])
       setListings(rows)
       setDeals(orgDeals)
+      setEntitlement(ent)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Daten konnten nicht geladen werden.')
     } finally {
@@ -49,6 +55,34 @@ export default function Dashboard() {
   useEffect(() => {
     load()
   }, [load])
+
+  useEffect(() => {
+    const s = params.get('stripe')
+    if (s !== 'done' && s !== 'refresh') return
+    const next = new URLSearchParams(params)
+    next.delete('stripe')
+    setParams(next, { replace: true })
+    // Returning from Stripe onboarding: re-run the function so it refreshes
+    // readiness live from Stripe, then reload the entitlement.
+    startConnectOnboarding().catch(() => {}).finally(() => load())
+  }, [params, setParams, load])
+
+  async function connect() {
+    setError(null)
+    setConnecting(true)
+    try {
+      const res = await startConnectOnboarding()
+      if (res.url) {
+        window.location.href = res.url
+        return
+      }
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Stripe-Verbindung fehlgeschlagen.')
+    } finally {
+      setConnecting(false)
+    }
+  }
 
   async function togglePublish(l: OwnerListing) {
     const next = l.status === 'published' ? 'draft' : 'published'
@@ -138,6 +172,34 @@ export default function Dashboard() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                )}
+              </section>
+
+              <section className="dash-section">
+                <div className="dash-section-head">
+                  <h2>Auszahlungen</h2>
+                </div>
+                {entitlement?.stripe_account_ready ? (
+                  <div className="alert alert-ok">
+                    Dein Stripe-Konto ist verbunden. Erlöse aus Verkäufen werden automatisch an dich
+                    überwiesen, sobald der Käufer den Erhalt bestätigt.
+                  </div>
+                ) : (
+                  <div className="empty-block">
+                    <p>
+                      {entitlement?.stripe_account_id
+                        ? 'Dein Stripe-Onboarding ist noch nicht abgeschlossen. Schließe es ab, um Auszahlungen zu erhalten.'
+                        : 'Verbinde ein Stripe-Konto, damit du Erlöse aus Verkäufen erhalten kannst. Erst danach können Käufer dein Projekt sicher bezahlen.'}
+                    </p>
+                    <button type="button" className="btn btn-primary" disabled={connecting} onClick={connect}>
+                      {connecting
+                        ? 'Weiterleitung…'
+                        : entitlement?.stripe_account_id
+                          ? 'Onboarding fortsetzen'
+                          : 'Stripe-Konto verbinden'}{' '}
+                      <span>→</span>
+                    </button>
                   </div>
                 )}
               </section>

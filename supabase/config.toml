@@ -1,0 +1,20 @@
+# Supabase config — Edge Functions for Atelier payments (ADR 0002).
+# project_id is the remote project ref (public-safe; not a secret).
+# Deploy:  supabase functions deploy <name> --project-ref pqyvphzpajcwwerqbknx
+# Secrets: supabase secrets set STRIPE_SECRET_KEY=sk_... STRIPE_WEBHOOK_SECRET=whsec_... APP_URL=https://...
+#          (SUPABASE_URL / SUPABASE_ANON_KEY / SUPABASE_SERVICE_ROLE_KEY are injected automatically.)
+project_id = "pqyvphzpajcwwerqbknx"
+
+# Buyer/seller-facing functions require a valid Supabase JWT (called from the app).
+[functions.checkout]
+verify_jwt = true
+
+[functions.connect-onboarding]
+verify_jwt = true
+
+[functions.confirm-release]
+verify_jwt = true
+
+# Stripe calls this server-to-server with no Supabase JWT — auth is the webhook signature.
+[functions.stripe-webhook]
+verify_jwt = false

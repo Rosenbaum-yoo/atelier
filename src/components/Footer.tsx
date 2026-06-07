@@ -24,6 +24,7 @@ export default function Footer() {
           <div className="footer-col">
             <h4>Verkaufen</h4>
             <ul>
+              <li><Link to="/demo">So funktioniert's</Link></li>
               <li><a href="/#sellers">Projekt einstellen</a></li>
               <li><a href="/#sellers">Bewertung</a></li>
               <li><a href="/#trust">Gebühren</a></li>
@@ -33,19 +34,17 @@ export default function Footer() {
           <div className="footer-col">
             <h4>Rechtliches</h4>
             <ul>
-              <li><a href="#">Treuhand-AGB</a></li>
-              <li><a href="#">Musterverträge</a></li>
-              <li><a href="#">NDA-Templates</a></li>
-              <li><a href="#">Datenschutz</a></li>
+              <li><Link to="/recht/agb">AGB</Link></li>
+              <li><Link to="/recht/datenschutz">Datenschutz</Link></li>
+              <li><Link to="/recht/widerruf">Widerruf</Link></li>
+              <li><Link to="/recht/impressum">Impressum</Link></li>
             </ul>
           </div>
           <div className="footer-col">
             <h4>Über uns</h4>
             <ul>
-              <li><a href="#">Manifest</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="#">Kontakt</a></li>
-              <li><a href="#">Karriere</a></li>
+              <li><Link to="/recht">Trust Center</Link></li>
+              <li><Link to="/recht/impressum">Kontakt</Link></li>
             </ul>
           </div>
         </div>

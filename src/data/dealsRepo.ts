@@ -2,6 +2,8 @@ import { getSupabase } from '../lib/supabase'
 
 export type DealStatus = 'open' | 'accepted' | 'declined' | 'withdrawn'
 
+export type PaymentStatus = 'none' | 'pending' | 'held' | 'released' | 'refunded' | 'failed'
+
 export type Deal = {
   id: string
   listing_id: string
@@ -10,6 +12,14 @@ export type Deal = {
   status: DealStatus
   offer_amount: number | null
   message: string | null
+  payment_status: PaymentStatus
+  amount_gross: number | null
+  fee_amount: number | null
+  amount_net: number | null
+  currency: string | null
+  buyer_confirmed_at: string | null
+  paid_at: string | null
+  released_at: string | null
   created_at: string
   updated_at: string
   listing?: { title: string; slug: string } | null
