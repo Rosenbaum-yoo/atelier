@@ -30,5 +30,6 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Claude Code local settings (CLAUDE.md in repo root stays tracked)
-.claude/
+# Claude Code local settings (CLAUDE.md in repo root stays tracked; project skills ARE shared)
+.claude/*
+!.claude/skills/

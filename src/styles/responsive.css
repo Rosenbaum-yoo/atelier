@@ -1,0 +1,122 @@
+/* responsive.css — Mobile-Verfeinerungen + Mobile-Navigation.
+   atelier.css bleibt unangetastet (Design-Lock); diese Schicht ergänzt NUR
+   Verhalten für kleine Screens und nutzt ausschließlich bestehende Tokens. */
+
+/* ---- Mobile-Menü-Schalter (auf Desktop versteckt) ---- */
+.nav-toggle{
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 46px;
+  height: 46px;
+  padding: 0 12px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+.nav-toggle:hover{ border-color: var(--ink); }
+.nav-toggle span{
+  display: block;
+  height: 1.5px;
+  background: var(--ink);
+  border-radius: 2px;
+}
+
+.nav-mobile{ display: none; }
+.nav-mobile a{
+  font-family: 'Geist', sans-serif;
+  font-size: 16px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  padding: 13px 2px;
+  border-bottom: 1px solid var(--line-soft);
+  transition: color 0.2s ease;
+}
+.nav-mobile a:hover{ color: var(--accent); }
+.nav-mobile-cta{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+.nav-mobile-cta .btn{ width: 100%; justify-content: center; }
+
+@media (max-width: 1024px){
+  .nav-cta{ display: none; }
+  .nav-toggle{ display: flex; }
+  .nav-mobile{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 0 20px;
+  }
+}
+
+/* ---- Phone-Feinschliff (Design unverändert, nur Abstände/Spalten) ---- */
+@media (max-width: 640px){
+  .hero{ padding: 66px 0 48px; }
+  .hero-actions{ flex-direction: column; align-items: stretch; }
+  .hero-actions .btn{ width: 100%; justify-content: center; }
+  .steps{ grid-template-columns: 1fr; }
+  .footer-top{ grid-template-columns: 1fr 1fr; gap: 30px; }
+}
+
+@media (max-width: 440px){
+  .footer-top{ grid-template-columns: 1fr; }
+}
+
+/* ===== Mobile-Audit (Ultracode-Crew, 29 Gaps) — nur Tokens/Bestandsklassen, Desktop unveraendert ===== */
+@media (max-width: 640px){
+  /* Wurzelursache: seitliches Container-Polster am Handy reduzieren (war ueberall 0 40px) */
+  .container{ padding: 0 20px; }
+
+  /* Section-Rhythmus am Handy straffen (war global 100px 0) */
+  section{ padding: 64px 0; }
+  .how-inner{ padding: 56px 22px; }
+
+  /* Lange Woerter / URLs / Breadcrumbs nie horizontal ueberlaufen lassen */
+  h1, .breadcrumb, .legal p, .legal li, .legal td{ overflow-wrap: anywhere; }
+
+  /* Kopfzeilen (Titel + Button) untereinander statt nebeneinander */
+  .section-head, .dash-section-head{ flex-direction: column; align-items: flex-start; gap: 12px; }
+
+  /* Marktplatz-Toolbar + Sortierung: stapeln, umbrechen, tap-bar */
+  .listings-toolbar{ flex-direction: column; align-items: flex-start; gap: 14px; }
+  .listings-sort{ flex-wrap: wrap; gap: 8px 16px; }
+  .listings-sort span{ padding: 8px 0; }
+  .filter-option{ padding: 11px 0; }
+
+  /* Gestapelte Listen-Karten: volle, gut tapbare Aktions-Buttons + Pills inhaltsbreit */
+  .row-actions{ display: flex; flex-wrap: wrap; gap: 8px; width: 100%; }
+  .row-actions .btn{ flex: 1 1 auto; justify-content: center; }
+  .row-actions .row-meta{ flex: 1 1 100%; }
+  .row-card > .pill{ align-self: flex-start; }
+
+  /* Auth-Karte + Formular-Aktionen */
+  .auth-card{ padding: 28px 22px; }
+  .form-actions{ flex-direction: column; align-items: stretch; }
+  .form-actions .btn{ width: 100%; justify-content: center; }
+
+  /* Hero-Stat-Kacheln + wuchtige Seiten-Headline entlasten */
+  .hero-stat{ padding: 20px 16px; }
+  .page-head h1{ font-size: 30px; }
+
+  /* Demo: Steuerung / CTA / Stage-Kopf tap-bar stapeln */
+  .demo-controls{ flex-direction: column; align-items: stretch; gap: 14px; }
+  .demo-buttons{ display: flex; width: 100%; gap: 8px; }
+  .demo-buttons .btn{ flex: 1 1 auto; justify-content: center; }
+  .demo-cta{ flex-direction: column; align-items: stretch; }
+  .demo-cta .btn{ width: 100%; justify-content: center; }
+  .demo-stage-head{ flex-direction: column; align-items: flex-start; gap: 10px; }
+
+  /* Footer-Unterzeile umbrechen statt abschneiden */
+  .footer-bottom{ flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+
+@media (max-width: 400px){
+  .container{ padding: 0 16px; }
+  .hero-stat-num{ font-size: 38px; }
+}
