@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
     const db = admin()
     const { data: deal } = await db
       .from('deals')
-      .select('id, buyer_id, seller_org_id, status, payment_status, offer_amount, currency, listing:listings(title)')
+      .select('id, buyer_id, seller_org_id, status, payment_status, offer_amount, currency, listing_id, listing:listings(title, status)')
       .eq('id', dealId)
       .maybeSingle()
 
@@ -36,6 +36,20 @@ Deno.serve(async (req) => {
       return json({ error: 'Dieser Deal ist bereits bezahlt.' }, 409)
     if (!deal.offer_amount || deal.offer_amount <= 0)
       return json({ error: 'Kein gültiger Betrag am Deal.' }, 409)
+
+    // Idempotency: a listing sells only once. Refuse if it is already sold or
+    // another deal on the same listing is paid/escrowed.
+    if (one<{ status?: string }>(deal.listing)?.status === 'sold')
+      return json({ error: 'Dieses Projekt ist bereits verkauft.' }, 409)
+    const { data: rival } = await db
+      .from('deals')
+      .select('id')
+      .eq('listing_id', deal.listing_id)
+      .in('payment_status', ['held', 'released'])
+      .neq('id', deal.id)
+      .limit(1)
+      .maybeSingle()
+    if (rival) return json({ error: 'Dieses Projekt ist bereits verkauft.' }, 409)
 
     const { data: ent } = await db
       .from('org_entitlements')

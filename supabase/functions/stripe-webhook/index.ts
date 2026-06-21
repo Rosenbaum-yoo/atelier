@@ -24,11 +24,14 @@ Deno.serve(async (req) => {
         const s = event.data.object as Record<string, any>
         if (s.payment_status === 'paid') {
           const pi = typeof s.payment_intent === 'string' ? s.payment_intent : s.payment_intent?.id
-          await db.from('deals').update({
+          const { data: d } = await db.from('deals').update({
             payment_status: 'held',
             paid_at: new Date().toISOString(),
             stripe_payment_intent_id: pi,
-          }).eq('stripe_checkout_session_id', s.id)
+          }).eq('stripe_checkout_session_id', s.id).select('id, listing_id').maybeSingle()
+          // The listing is now sold — take it off the market (idempotent).
+          if (d?.listing_id)
+            await db.from('listings').update({ status: 'sold' }).eq('id', d.listing_id).eq('status', 'published')
         }
         break
       }
@@ -40,8 +43,11 @@ Deno.serve(async (req) => {
       }
       case 'charge.refunded': {
         const ch = event.data.object as Record<string, any>
-        await db.from('deals').update({ payment_status: 'refunded' })
-          .eq('stripe_payment_intent_id', ch.payment_intent)
+        const { data: d } = await db.from('deals').update({ payment_status: 'refunded' })
+          .eq('stripe_payment_intent_id', ch.payment_intent).select('id, listing_id').maybeSingle()
+        // Refund frees the listing back onto the market.
+        if (d?.listing_id)
+          await db.from('listings').update({ status: 'published' }).eq('id', d.listing_id).eq('status', 'sold')
         break
       }
       case 'account.updated': {

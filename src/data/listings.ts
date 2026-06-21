@@ -63,6 +63,7 @@ export interface Listing {
   priceValue: number
   listedAt: string
   equity?: { percent: number; valuation: string }
+  status?: 'draft' | 'published' | 'archived' | 'sold'
 }
 
 export const listings: Listing[] = [

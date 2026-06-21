@@ -264,22 +264,33 @@ export default function ListingDetail() {
               <div style={{ ...card, padding: 28, marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Geist Mono', monospace", fontSize: 11, color: 'var(--ink-mute)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>
                   <span>{l.price.type}</span>
-                  <span>● Verfügbar</span>
+                  <span>{l.status === 'sold' ? '● Verkauft' : '● Verfügbar'}</span>
                 </div>
                 <div style={{ fontFamily: "'Fraunces', serif", fontSize: 44, fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1 }}>{l.price.num}</div>
                 <div style={{ color: 'var(--ink-mute)', fontSize: 13, marginTop: 6 }}>{l.price.multiple}</div>
 
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  style={{ width: '100%', justifyContent: 'center', marginTop: 22 }}
-                  onClick={startOffer}
-                >
-                  {offerOpen ? 'Abbrechen' : <>Angebot machen <span>→</span></>}
-                </button>
+                {l.status === 'sold' ? (
+                  <button
+                    type="button"
+                    className="btn"
+                    style={{ width: '100%', justifyContent: 'center', marginTop: 22 }}
+                    disabled
+                  >
+                    Bereits verkauft
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    style={{ width: '100%', justifyContent: 'center', marginTop: 22 }}
+                    onClick={startOffer}
+                  >
+                    {offerOpen ? 'Abbrechen' : <>Angebot machen <span>→</span></>}
+                  </button>
+                )}
                 <Link to="/dealroom" className="btn" style={{ width: '100%', justifyContent: 'center', marginTop: 10 }}>Zum Dealroom</Link>
 
-                {offerOpen && (
+                {l.status !== 'sold' && offerOpen && (
                   <form onSubmit={submitOffer} style={{ marginTop: 18, paddingTop: 18, borderTop: '1px dashed var(--line)' }} noValidate>
                     {error && <div className="alert alert-error">{error}</div>}
                     <div className="field">

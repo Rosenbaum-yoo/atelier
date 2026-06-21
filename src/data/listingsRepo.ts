@@ -4,7 +4,7 @@ import { listings as staticListings, type Listing } from './listings'
 const COLUMNS =
   'slug,icon,icon_class,title,category,subtitle,description,model,about,' +
   'price_num,price_type,price_multiple,kind,revenue_model,sale_type,' +
-  'monthly_revenue,price_value,listed_at,data'
+  'monthly_revenue,price_value,listed_at,data,status'
 
 function rowToListing(r: Record<string, any>): Listing {
   const d = r.data ?? {}
@@ -32,6 +32,7 @@ function rowToListing(r: Record<string, any>): Listing {
     seller: d.seller ?? { name: '', avatar: '', rating: '' },
     badges: d.badges ?? [],
     equity: d.equity,
+    status: r.status,
   }
 }
 
@@ -74,7 +75,7 @@ export async function fetchListingBySlug(slug: string): Promise<Listing | null> 
 export type OwnerListing = {
   slug: string
   title: string
-  status: 'draft' | 'published'
+  status: 'draft' | 'published' | 'sold'
   price_num: string
   kind: string
   listed_at: string

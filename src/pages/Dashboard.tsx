@@ -16,6 +16,13 @@ import { kindLabels, type ListingKind } from '../data/listings'
 const statusLabel: Record<string, string> = {
   draft: 'Entwurf',
   published: 'Veröffentlicht',
+  sold: 'Verkauft',
+}
+
+const pillClass: Record<string, string> = {
+  draft: 'pill-draft',
+  published: 'pill-published',
+  sold: 'pill-published',
 }
 
 export default function Dashboard() {
@@ -154,21 +161,25 @@ export default function Dashboard() {
                             {kindLabels[l.kind as ListingKind] ?? l.kind} · {l.price_num}
                           </div>
                         </div>
-                        <span className={`pill pill-${l.status}`}>
+                        <span className={`pill ${pillClass[l.status] ?? 'pill-draft'}`}>
                           {statusLabel[l.status] ?? l.status}
                         </span>
                         <div className="row-actions">
-                          {l.status === 'published' && (
+                          {(l.status === 'published' || l.status === 'sold') && (
                             <Link to={`/listing/${l.slug}`} className="btn btn-sm">
                               Ansehen
                             </Link>
                           )}
-                          <button type="button" className="btn btn-sm" onClick={() => togglePublish(l)}>
-                            {l.status === 'published' ? 'Zurückziehen' : 'Veröffentlichen'}
-                          </button>
-                          <button type="button" className="btn btn-sm" onClick={() => remove(l)}>
-                            Löschen
-                          </button>
+                          {l.status !== 'sold' && (
+                            <>
+                              <button type="button" className="btn btn-sm" onClick={() => togglePublish(l)}>
+                                {l.status === 'published' ? 'Zurückziehen' : 'Veröffentlichen'}
+                              </button>
+                              <button type="button" className="btn btn-sm" onClick={() => remove(l)}>
+                                Löschen
+                              </button>
+                            </>
+                          )}
                         </div>
                       </div>
                     ))}
