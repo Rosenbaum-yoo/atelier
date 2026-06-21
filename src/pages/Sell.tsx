@@ -11,6 +11,7 @@ import {
   type RevenueModel,
   type SaleType,
 } from '../data/listings'
+import { generateListing } from '../data/aiRepo'
 
 const kinds: ListingKind[] = ['saas', 'ios', 'android', 'web', 'devtool', 'game', 'ai']
 const models: RevenueModel[] = ['mrr', 'onetime', 'iap', 'ads']
@@ -51,9 +52,40 @@ export default function Sell() {
   const [tech, setTech] = useState('')
   const [description, setDescription] = useState('')
   const [about, setAbout] = useState('')
+  const [highlights, setHighlights] = useState<string[]>([])
 
   const [busy, setBusy] = useState(false)
+  const [aiBusy, setAiBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  async function generate() {
+    setError(null)
+    if (!title.trim()) {
+      setError('Bitte gib zuerst einen Titel an, dann legt die KI los.')
+      return
+    }
+    setAiBusy(true)
+    try {
+      const g = await generateListing({
+        title: title.trim(),
+        category: category.trim() || undefined,
+        kind,
+        saleType,
+        revenueModel,
+        monthlyRevenue: Math.max(0, Math.round(Number(monthlyRevenue) || 0)),
+        priceValue: Math.max(0, Math.round(Number(priceValue) || 0)),
+        tech: tech.trim() || undefined,
+      })
+      if (g.subtitle) setSubtitle(g.subtitle)
+      if (g.description) setDescription(g.description)
+      if (g.about) setAbout(g.about)
+      if (g.highlights?.length) setHighlights(g.highlights)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'KI-Generierung fehlgeschlagen.')
+    } finally {
+      setAiBusy(false)
+    }
+  }
 
   async function save(status: 'draft' | 'published') {
     setError(null)
@@ -90,7 +122,7 @@ export default function Sell() {
     const data = {
       tech: techList,
       metrics,
-      highlights: [] as string[],
+      highlights,
       financials: [] as { label: string; val: string }[],
       seller: { name: sellerName, avatar: initials(sellerName), rating: 'Neu bei Atelier' },
       badges: [{ kind: 'plain', label: kindLabels[kind] }],
@@ -278,6 +310,34 @@ export default function Sell() {
                 />
                 <span className="field-hint">Mit Komma trennen.</span>
               </div>
+
+              <div className="field">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  style={{ width: '100%', justifyContent: 'center' }}
+                  disabled={aiBusy}
+                  onClick={generate}
+                >
+                  {aiBusy ? <span className="spinner" /> : <>✨ Beschreibung mit KI generieren</>}
+                </button>
+                <span className="field-hint">
+                  Erzeugt Untertitel, Kurz- und Langbeschreibung aus deinen Angaben (Titel, Typ, Tech …). Alles bleibt editierbar.
+                </span>
+              </div>
+
+              {highlights.length > 0 && (
+                <div className="field">
+                  <label>Highlights</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {highlights.map((h, i) => (
+                      <span key={i} className="pill pill-draft">
+                        {h}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="field">
                 <label htmlFor="description">Kurzbeschreibung</label>

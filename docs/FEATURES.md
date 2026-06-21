@@ -21,7 +21,7 @@
 | 11 | Demo-Walkthrough | ✅ | 100 % |
 | 12 | Mobile-Responsive | ✅ | ~85 % |
 | 13 | PWA (installierbar) | ✅ | ~80 % |
-| 14 | KI-Listing-Beschreibungen | 📋 | 0 % |
+| 14 | KI-Listing-Beschreibungen | 🟡 | ~70 % (Deploy+Key offen) |
 | 15 | RBAC (Experte/Admin-Rollen) | 📋 | ~20 % |
 | 16 | Spezialmodule (NDA, DD, Übergabe …) | 📋 | 0 % |
 | 17 | i18n + Mehrwährung | 📋 | 0 % |
@@ -95,10 +95,10 @@
 **Wie umgesetzt:** `vite-plugin-pwa` (autoUpdate) · Manifest (Brand-Farben, 4 Icons inkl. maskable) · Brand-Icons aus **einer** SVG (`scripts/gen-icons.mjs`, sharp, gesperrte Tokens) · `index.html`-Meta. **Sicherheitskern:** Supabase/Stripe = `NetworkOnly` (Auth/Geld nie gecacht).
 **Wie weiter:** echte Install-/Lighthouse-Prüfung auf https/Prod · Offline-Hinweis-UI.
 
-## 14. KI-Listing-Beschreibungen 📋
-**Was:** Verkäufer beantwortet wenige Felder → KI erzeugt premium Artikelbeschreibung + Titel/Tags (wie eBay Kleinanzeigen, besser).
-**Wie geplant:** Edge Function → **Claude API** (Key server-seitig), strukturierter Prompt aus Sell-Feldern; Button „✨ Beschreibung generieren", Verkäufer editierbar. Eingebautes Vertrauens-/Priming-Wording.
-**Wie weiter:** später Auto-Bewertung (MRR→Preisspanne), Blind-Listing-Texte, Käufer-Matching.
+## 14. KI-Listing-Beschreibungen 🟡
+**Was:** Verkäufer füllt die Fakten-Felder → KI erzeugt premium Untertitel + Kurz-/Langbeschreibung + Highlights (wie eBay Kleinanzeigen, besser). Alles editierbar.
+**Wie umgesetzt:** Edge Function `generate-listing` (Deno, Claude `claude-sonnet-4-6` via **rohem fetch** = kein SDK-Versions-Risiko; System-Prompt erfindet **keine** Kennzahlen — nur übergebene Fakten; striktes JSON + defensives `extractJson`) · `verify_jwt=true` (`config.toml`) · Client-Brücke `src/data/aiRepo.ts` · Button „✨ Beschreibung mit KI generieren" + Highlights-Chips in `Sell.tsx` (→ `data.highlights`). Build grün (100 Module).
+**Wie weiter (Owner-Gate):** `ANTHROPIC_API_KEY` als Supabase-Secret + Function deployen → live. Danach: Auto-Bewertung (MRR→Preisspanne), Blind-Listing-Texte, Käufer-Matching.
 
 ## 15. RBAC — Rollen Verkäufer/Käufer/Experte/Admin 📋
 **Was:** Echte Rollen + Berechtigungen; Experten (Anwalt/Notar/Steuer/IT-Audit/M&A).

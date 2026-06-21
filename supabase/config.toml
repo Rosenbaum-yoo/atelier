@@ -18,3 +18,7 @@ verify_jwt = true
 # Stripe calls this server-to-server with no Supabase JWT — auth is the webhook signature.
 [functions.stripe-webhook]
 verify_jwt = false
+
+# KI-Listing-Texte: nur für angemeldete Verkäufer. Secret: ANTHROPIC_API_KEY.
+[functions.generate-listing]
+verify_jwt = true
