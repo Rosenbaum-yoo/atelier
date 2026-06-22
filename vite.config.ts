@@ -3,6 +3,11 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  // Eigener fester Dev-/Preview-Port für Atelier (Session 11) — verhindert die
+  // Kollision mit den anderen Projekten (die auf 5173+ laufen). strictPort: lieber
+  // ein klarer "Port belegt"-Fehler als stilles Hochwandern in ein Nachbar-Projekt.
+  server: { port: 5011, strictPort: true },
+  preview: { port: 5011, strictPort: true },
   plugins: [
     react(),
     VitePWA({
