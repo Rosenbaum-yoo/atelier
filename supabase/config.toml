@@ -22,3 +22,7 @@ verify_jwt = false
 # KI-Listing-Texte: nur für angemeldete Verkäufer. Secret: ANTHROPIC_API_KEY.
 [functions.generate-listing]
 verify_jwt = true
+
+# Verifizierungs-Entscheid: JWT nötig; die Funktion prüft zusätzlich platform_staff.
+[functions.verification-review]
+verify_jwt = true

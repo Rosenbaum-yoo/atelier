@@ -64,6 +64,10 @@ export interface Listing {
   listedAt: string
   equity?: { percent: number; valuation: string }
   status?: 'draft' | 'published' | 'archived' | 'sold'
+  // Server-abgeleitete Trust-Flags (aus org_entitlements via listings_public-View).
+  // NIE vom Client geschrieben. Optional → statische Seed-Daten = nicht verifiziert.
+  sellerVerified?: boolean
+  revenueVerified?: boolean
 }
 
 export const listings: Listing[] = [

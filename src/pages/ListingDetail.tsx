@@ -171,10 +171,14 @@ export default function ListingDetail() {
             {/* LEFT */}
             <div>
               <div className="listing-badges" style={{ justifyContent: 'flex-start', marginBottom: 18 }}>
-                {l.badges.map((b, i) => (
-                  <span key={i} className={b.kind === 'plain' ? 'badge' : `badge ${b.kind}`}>{b.label}</span>
-                ))}
+                {l.badges
+                  .filter((b) => b.kind !== 'verified')
+                  .map((b, i) => (
+                    <span key={i} className={b.kind === 'plain' ? 'badge' : `badge ${b.kind}`}>{b.label}</span>
+                  ))}
                 <span className="badge">{l.model}</span>
+                {l.sellerVerified && <span className="badge verified">✓ Verkäufer verifiziert</span>}
+                {l.revenueVerified && <span className="badge verified">✓ Umsatz geprüft</span>}
               </div>
               <h1 style={{ fontSize: 'clamp(40px, 5vw, 66px)', lineHeight: 1, marginBottom: 12 }}>{l.title}</h1>
               <div className="listing-cat" style={{ fontSize: 12, marginBottom: 8 }}>{l.category}</div>
@@ -356,7 +360,7 @@ export default function ListingDetail() {
                   </div>
                 </div>
                 <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--line)', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  <span className="badge verified">Identität verifiziert</span>
+                  {l.sellerVerified && <span className="badge verified">✓ Identität verifiziert</span>}
                   <span className="badge">Mitglied seit 2024</span>
                 </div>
               </div>

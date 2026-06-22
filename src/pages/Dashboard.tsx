@@ -11,6 +11,11 @@ import {
 } from '../data/listingsRepo'
 import { fetchOrgDeals, type Deal } from '../data/dealsRepo'
 import { fetchEntitlement, startConnectOnboarding, type Entitlement } from '../data/paymentsRepo'
+import {
+  requestVerification,
+  fetchVerificationRequests,
+  type VerificationRequest,
+} from '../data/verificationRepo'
 import { kindLabels, type ListingKind } from '../data/listings'
 
 const statusLabel: Record<string, string> = {
@@ -33,6 +38,8 @@ export default function Dashboard() {
   const [deals, setDeals] = useState<Deal[]>([])
   const [entitlement, setEntitlement] = useState<Entitlement | null>(null)
   const [connecting, setConnecting] = useState(false)
+  const [verifications, setVerifications] = useState<VerificationRequest[]>([])
+  const [verifying, setVerifying] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [params, setParams] = useSearchParams()
@@ -44,14 +51,16 @@ export default function Dashboard() {
     }
     setError(null)
     try {
-      const [rows, orgDeals, ent] = await Promise.all([
+      const [rows, orgDeals, ent, vreqs] = await Promise.all([
         fetchOrgListings(orgId),
         fetchOrgDeals(orgId),
         fetchEntitlement(orgId),
+        fetchVerificationRequests(),
       ])
       setListings(rows)
       setDeals(orgDeals)
       setEntitlement(ent)
+      setVerifications(vreqs)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Daten konnten nicht geladen werden.')
     } finally {
@@ -91,6 +100,19 @@ export default function Dashboard() {
     }
   }
 
+  async function requestSellerVerification() {
+    setError(null)
+    setVerifying(true)
+    try {
+      await requestVerification('seller')
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Anfrage fehlgeschlagen.')
+    } finally {
+      setVerifying(false)
+    }
+  }
+
   async function togglePublish(l: OwnerListing) {
     const next = l.status === 'published' ? 'draft' : 'published'
     try {
@@ -114,6 +136,7 @@ export default function Dashboard() {
   }
 
   const openOffers = deals.filter((d) => d.status === 'open').length
+  const sellerVerification = verifications.find((v) => v.kind === 'seller')
 
   return (
     <>
@@ -210,6 +233,45 @@ export default function Dashboard() {
                           ? 'Onboarding fortsetzen'
                           : 'Stripe-Konto verbinden'}{' '}
                       <span>→</span>
+                    </button>
+                  </div>
+                )}
+              </section>
+
+              <section className="dash-section">
+                <div className="dash-section-head">
+                  <h2>Verifizierung</h2>
+                </div>
+                {entitlement?.seller_verified ? (
+                  <div className="alert alert-ok">
+                    Dein Verkäufer-Status ist verifiziert. Das Abzeichen „✓ Verkäufer verifiziert"
+                    erscheint auf deinen Projekten und stärkt das Vertrauen der Käufer.
+                  </div>
+                ) : sellerVerification?.status === 'rejected' ? (
+                  <div className="empty-block">
+                    <p>
+                      Deine letzte Verifizierungs-Anfrage wurde nicht bestätigt
+                      {sellerVerification.review_note ? `: ${sellerVerification.review_note}` : '.'} Du
+                      kannst sie nach Aktualisierung deiner Angaben erneut stellen.
+                    </p>
+                    <button type="button" className="btn btn-primary" disabled={verifying} onClick={requestSellerVerification}>
+                      {verifying ? 'Wird gesendet…' : <>Erneut anfordern <span>→</span></>}
+                    </button>
+                  </div>
+                ) : sellerVerification ? (
+                  <div className="alert alert-ok">
+                    Deine Verifizierungs-Anfrage wird geprüft. Wir melden uns, sobald dein
+                    Verkäufer-Status bestätigt ist.
+                  </div>
+                ) : (
+                  <div className="empty-block">
+                    <p>
+                      Lass dich als Verkäufer verifizieren, um das Vertrauens-Abzeichen auf deinen
+                      Projekten zu erhalten. Geprüfte Verkäufer erzielen erfahrungsgemäß mehr
+                      qualifizierte Anfragen.
+                    </p>
+                    <button type="button" className="btn btn-primary" disabled={verifying} onClick={requestSellerVerification}>
+                      {verifying ? 'Wird gesendet…' : <>Verifizierung anfordern <span>→</span></>}
                     </button>
                   </div>
                 )}

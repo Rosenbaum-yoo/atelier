@@ -11,11 +11,15 @@ export default function ListingCard({ listing: l }: { listing: Listing }) {
       <div className="listing-head">
         <div className={`listing-icon ${l.iconClass}`}>{l.icon}</div>
         <div className="listing-badges">
-          {l.badges.map((b, i) => (
-            <span key={i} className={b.kind === 'plain' ? 'badge' : `badge ${b.kind}`}>
-              {b.label}
-            </span>
-          ))}
+          {l.badges
+            .filter((b) => b.kind !== 'verified')
+            .map((b, i) => (
+              <span key={i} className={b.kind === 'plain' ? 'badge' : `badge ${b.kind}`}>
+                {b.label}
+              </span>
+            ))}
+          {l.sellerVerified && <span className="badge verified">✓ Verkäufer verifiziert</span>}
+          {l.revenueVerified && <span className="badge verified">✓ Umsatz geprüft</span>}
         </div>
       </div>
       <div className="listing-title">{l.title}</div>

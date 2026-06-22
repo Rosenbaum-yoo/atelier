@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard'
 import Dealroom from './pages/Dealroom'
 import Demo from './pages/Demo'
 import Trust from './pages/Trust'
+import StaffCenter from './pages/StaffCenter'
 import LegalPage from './components/LegalPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import ScrollToTop from './components/ScrollToTop'
@@ -43,6 +44,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Dealroom />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/staff"
+          element={
+            <ProtectedRoute>
+              <StaffCenter />
             </ProtectedRoute>
           }
         />

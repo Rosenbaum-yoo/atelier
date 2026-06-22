@@ -1,10 +1,15 @@
 import { getSupabase, isSupabaseConfigured } from '../lib/supabase'
 import { listings as staticListings, type Listing } from './listings'
 
+// Buyer-facing reads use listings_public (a view that joins the SERVER-OWNED
+// verified flags from org_entitlements). The flags are derived truth — there is
+// no verified column on listings to forge. Owner-only reads (fetchOrgListings)
+// stay on the base table.
 const COLUMNS =
   'slug,icon,icon_class,title,category,subtitle,description,model,about,' +
   'price_num,price_type,price_multiple,kind,revenue_model,sale_type,' +
-  'monthly_revenue,price_value,listed_at,data,status'
+  'monthly_revenue,price_value,listed_at,data,status,' +
+  'seller_verified,revenue_verified'
 
 function rowToListing(r: Record<string, any>): Listing {
   const d = r.data ?? {}
@@ -33,6 +38,8 @@ function rowToListing(r: Record<string, any>): Listing {
     badges: d.badges ?? [],
     equity: d.equity,
     status: r.status,
+    sellerVerified: r.seller_verified ?? false,
+    revenueVerified: r.revenue_verified ?? false,
   }
 }
 
@@ -43,7 +50,7 @@ export async function fetchListings(): Promise<Listing[]> {
   if (!isSupabaseConfigured) return staticListings
   try {
     const { data, error } = await getSupabase()
-      .from('listings')
+      .from('listings_public')
       .select(COLUMNS)
       .eq('status', 'published')
     if (error || !data || data.length === 0) return staticListings
@@ -61,7 +68,7 @@ export async function fetchListingBySlug(slug: string): Promise<Listing | null> 
   if (!isSupabaseConfigured) return fallback()
   try {
     const { data, error } = await getSupabase()
-      .from('listings')
+      .from('listings_public')
       .select(COLUMNS)
       .eq('slug', slug)
       .maybeSingle()

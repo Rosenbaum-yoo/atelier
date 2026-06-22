@@ -4,6 +4,8 @@ export type Entitlement = {
   org_id: string
   stripe_account_id: string | null
   stripe_account_ready: boolean
+  seller_verified: boolean
+  revenue_verified: boolean
 }
 
 // Edge Functions return a JSON body even on error; surface its `error` field.
@@ -38,7 +40,7 @@ export async function startConnectOnboarding(): Promise<{ url?: string; ready?: 
 export async function fetchEntitlement(orgId: string): Promise<Entitlement | null> {
   const { data, error } = await getSupabase()
     .from('org_entitlements')
-    .select('org_id, stripe_account_id, stripe_account_ready')
+    .select('org_id, stripe_account_id, stripe_account_ready, seller_verified, revenue_verified')
     .eq('org_id', orgId)
     .maybeSingle()
   if (error) throw error
