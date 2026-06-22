@@ -7,6 +7,8 @@ import Dashboard from './pages/Dashboard'
 import Dealroom from './pages/Dealroom'
 import StaffCenter from './pages/StaffCenter'
 import Demo from './pages/Demo'
+import Pricing from './pages/Pricing'
+import Faq from './pages/Faq'
 import Trust from './pages/Trust'
 import LegalPage from './components/LegalPage'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -20,6 +22,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/listing/:id" element={<ListingDetail />} />
         <Route path="/demo" element={<Demo />} />
+        <Route path="/preise" element={<Pricing />} />
+        <Route path="/faq" element={<Faq />} />
         <Route path="/recht" element={<Trust />} />
         <Route path="/recht/:slug" element={<LegalPage />} />
         <Route path="/login" element={<Login />} />

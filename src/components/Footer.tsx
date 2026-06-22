@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import HashLink from './HashLink'
 
 export default function Footer() {
   return (
@@ -14,21 +15,21 @@ export default function Footer() {
           <div className="footer-col">
             <h4>Marktplatz</h4>
             <ul>
-              <li><a href="/#marketplace">Alle Listings</a></li>
-              <li><a href="/#marketplace">SaaS</a></li>
-              <li><a href="/#marketplace">Mobile Apps</a></li>
-              <li><a href="/#marketplace">Dev-Tools</a></li>
-              <li><a href="/#marketplace">KI-Projekte</a></li>
+              <li><HashLink hash="marketplace">Alle Listings</HashLink></li>
+              <li><HashLink hash="marketplace">SaaS</HashLink></li>
+              <li><HashLink hash="marketplace">Mobile Apps</HashLink></li>
+              <li><HashLink hash="marketplace">Dev-Tools</HashLink></li>
+              <li><HashLink hash="marketplace">KI-Projekte</HashLink></li>
             </ul>
           </div>
           <div className="footer-col">
             <h4>Verkaufen</h4>
             <ul>
               <li><Link to="/demo">So funktioniert's</Link></li>
-              <li><a href="/#sellers">Projekt einstellen</a></li>
-              <li><a href="/#sellers">Bewertung</a></li>
-              <li><a href="/#trust">Gebühren</a></li>
-              <li><a href="/#how">Verkäufer-FAQ</a></li>
+              <li><Link to="/sell">Projekt einstellen</Link></li>
+              <li><HashLink hash="sellers">Bewertung</HashLink></li>
+              <li><Link to="/preise">Gebühren</Link></li>
+              <li><Link to="/faq">Verkäufer-FAQ</Link></li>
             </ul>
           </div>
           <div className="footer-col">
@@ -49,8 +50,8 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <div>© 2026 Atelier · Düsseldorf, Berlin, Lissabon</div>
-          <div style={{ fontFamily: "'Geist Mono', monospace" }}>v1.2.0 · Made with care for the craft</div>
+          <div>© 2026 Atelier · Kuratierter Marktplatz für Software</div>
+          <div style={{ fontFamily: "'Geist Mono', monospace" }}>Mit Sorgfalt gebaut — für das Handwerk dahinter.</div>
         </div>
       </div>
     </footer>

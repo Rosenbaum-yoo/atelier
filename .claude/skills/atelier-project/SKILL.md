@@ -59,7 +59,7 @@ infra/ · Dockerfile       <- Self-Host-Schalter (nicht aktiv)
 ```
 
 ### Routen (App.tsx)
-`/` Home · `/listing/:id` Detail · `/demo` Walkthrough · `/recht` Trust-Hub · `/recht/:slug` Rechtsdokument · `/login` · **geschuetzt** (`ProtectedRoute`): `/sell` `/dashboard` `/dealroom`.
+`/` Home · `/listing/:id` Detail · `/preise` Preise · `/faq` FAQ · `/demo` Walkthrough · `/recht` Trust-Hub · `/recht/:slug` Rechtsdokument · `/login` · **geschuetzt** (`ProtectedRoute`): `/sell` `/dashboard` `/dealroom` `/staff` (Staff Center / Verifizierungs-Queue). Anker-Navigation via `HashLink` (SPA, kein Full-Reload) + hash-aware `ScrollToTop`.
 
 ## DESIGN-LOCK (nicht verhandelbar)
 - Single source of truth: `src/styles/atelier.css` — **verbatim aus `atelier.html`**, nie umgeschrieben. Neue App-CSS lebt in `app.css`/`responsive.css` und nutzt **ausschliesslich bestehende Tokens + Klassen**.
@@ -97,6 +97,7 @@ infra/ · Dockerfile       <- Self-Host-Schalter (nicht aktiv)
 - **0002** auth/orgs/deals: Org-Auto-Provisioning + `deals` + RLS (beide Marktseiten).
 - **0003** payments/plans/entitlements: `plans` (provision-only), `org_entitlements`, Payment-Lifecycle auf `deals`, `individuell_requests` — alles RLS.
 - **0004** listing-sold: `sold`-Status + Idempotenz-Trigger + Backfill.
+- **0005** verification: Verifizierungs-Flags auf `org_entitlements` (**server-owned**, kein Client-Write) + Badge via View `listings_public` / `listing_verified_flags()` (SECURITY DEFINER) + `verification_requests` + `platform_staff`-Allowlist + `verification_audit` (append-only) + Revenue-Freeze-Trigger — alles RLS.
 
 ## Zahlungen / Treuhand (Stripe Connect — das groesste de-riskte Risiko)
 **Modell (ADR 0002):** Stripe Connect **Express** (Verkaeufer-Payout-Accounts) · **separate charges & transfers** · **hold-and-release-Treuhand**. Stripe ist die regulierte/PCI-Entitaet — wir beruehren nie Kartendaten und vermeiden eigene Zahlungs-/E-Geld-Lizenz.
@@ -153,7 +154,10 @@ infra/ · Dockerfile       <- Self-Host-Schalter (nicht aktiv)
 - **Trust Center** (`/recht`): Impressum/AGB/Datenschutz/Widerruf als strukturierte **Drafts** (`draft:true`, Owner-Angaben in `[Klammern]`, Draft-Banner) — vor Go-Live: Firmendaten + Anwalts-Freigabe.
 - **Demo-Walkthrough** (`/demo`): selbstlaufender 6-Schritt-Lifecycle, datengetrieben, klar als Beispiel markiert.
 - **sold-Fix** (0004) verifiziert (verkauftes Test-Listing aus Markt).
-- **In Arbeit:** Mobile-Menue (`Nav.tsx` Hamburger + `nav-mobile`) + `responsive.css` (token-only, @media 1024/640/440). **PWA-Ansatz offen.**
+- **Mobile + PWA fertig:** Hamburger-Nav (`Nav.tsx`/`nav-mobile`) + `responsive.css` (token-only); `vite-plugin-pwa` + Manifest + Brand-Icons (`scripts/gen-icons.mjs`); Supabase/Stripe = NetworkOnly (Auth/Geld nie gecacht).
+- **Verifizierung/Trust-Foundation** (0005): Badges „✓ Verkaeufer verifiziert"/„✓ Umsatz geprueft" (server-owned, View-abgeleitet), Edge Function `verification-review` (Staff-Gate via `platform_staff`), Staff Center `/staff` (Bestaetigen/Ablehnen-Queue), Dashboard „Verifizierung anfordern".
+- **KI-Listings:** Edge Function `generate-listing` (Claude `claude-sonnet-4-6` via rohem fetch), `Sell.tsx` „✨ Beschreibung mit KI generieren". **Gate:** `ANTHROPIC_API_KEY`-Secret + Deploy.
+- **Landing/Launch-Reife (2026-06-22, gegen TempConnect/TerminPuls-Benchmark):** erfundene Hero-Kennzahlen RAUS → ehrliche Pre-Launch-Claims + Beispiel-Kennzeichnung; ehrliche **Trust-Bar**; **Preise-Seite** `/preise` (6% + Individuell); **FAQ** `/faq` (natives `<details>`, echte Einwaende); tote CTAs/Anker verdrahtet; **funktionaler Preis-Slider**; Footer bereinigt. Build 107 Module gruen.
 
 ## Gates bis echte zahlende Kunden (ehrlich)
 1. **UG gegruendet** -> **neues** Stripe-Business-Konto (kein "Umschalten" des Privatkontos; fremdes Geld auf Privatkonto = persoenliche Haftung). 2. **Rechtstexte final** + Anwalts-Freigabe + Firmendaten. 3. **Eigene Domain** + Resend-Confirm-Mail (Phase B). 4. **Equity-/Firmen-Deals** brauchen Notar-Pfad (**§ 15 GmbHG**, notarielle Beurkundung) vor Freigabe — aktueller Klick->Transfer gilt nur fuer Asset/Software-Deals; Plattform-Equity nur bespoke/"Individuell".

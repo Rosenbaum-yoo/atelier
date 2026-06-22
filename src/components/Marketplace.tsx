@@ -61,6 +61,7 @@ export default function Marketplace() {
   const [sale, setSale] = useState<SaleType | null>(null)
   const [tech, setTech] = useState<string | null>(null)
   const [sort, setSort] = useState<SortKey>('featured')
+  const [priceRange, setPriceRange] = useState<[number, number] | null>(null)
 
   useEffect(() => {
     let alive = true
@@ -77,6 +78,7 @@ export default function Marketplace() {
       if (kind !== 'all' && l.kind !== kind) return false
       if (model && l.revenueModel !== model) return false
       if (sale && l.saleType !== sale) return false
+      if (priceRange && (l.priceValue < priceRange[0] || l.priceValue > priceRange[1])) return false
       if (tech) {
         const grp = techGroups.find((g) => g.label === tech)
         if (grp && !techMatch(l, grp.match)) return false
@@ -97,7 +99,7 @@ export default function Marketplace() {
           return 0
       }
     })
-  }, [data, kind, model, sale, tech, sort])
+  }, [data, kind, model, sale, tech, sort, priceRange])
 
   const kindCount = (k: ListingKind) => data.filter((l) => l.kind === k).length
   const modelCount = (m: RevenueModel) => data.filter((l) => l.revenueModel === m).length
@@ -107,12 +109,15 @@ export default function Marketplace() {
   const prices = data.map((l) => l.priceValue)
   const minPrice = Math.min(...prices)
   const maxPrice = Math.max(...prices)
+  const lo = priceRange ? priceRange[0] : minPrice
+  const hi = priceRange ? priceRange[1] : maxPrice
 
   const resetFilters = () => {
     setKind('all')
     setModel(null)
     setSale(null)
     setTech(null)
+    setPriceRange(null)
   }
 
   return (
@@ -153,13 +158,26 @@ export default function Marketplace() {
             </div>
 
             <div className="filter-group">
-              <div className="filter-title">Preis</div>
-              <div className="range-track">
-                <div className="range-fill"></div>
-                <div className="range-handle left"></div>
-                <div className="range-handle right"></div>
+              <div className="filter-title">Preisspanne</div>
+              <div className="range-inputs">
+                <input
+                  type="range"
+                  min={minPrice}
+                  max={maxPrice}
+                  value={lo}
+                  aria-label="Mindestpreis"
+                  onChange={(e) => setPriceRange([Math.min(Number(e.target.value), hi), hi])}
+                />
+                <input
+                  type="range"
+                  min={minPrice}
+                  max={maxPrice}
+                  value={hi}
+                  aria-label="Höchstpreis"
+                  onChange={(e) => setPriceRange([lo, Math.max(Number(e.target.value), lo)])}
+                />
               </div>
-              <div className="range-vals"><span>{fmtPrice(minPrice)}</span><span>{fmtPrice(maxPrice)}</span></div>
+              <div className="range-vals"><span>{fmtPrice(lo)}</span><span>{fmtPrice(hi)}</span></div>
             </div>
 
             <div className="filter-group">

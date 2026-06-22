@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
+import { Link } from 'react-router-dom'
 import Marketplace from '../components/Marketplace'
+import HashLink from '../components/HashLink'
 
 const steps = [
   {
@@ -71,6 +73,15 @@ const features: { svg: ReactNode; title: string; desc: string }[] = [
   },
 ]
 
+const trustSignals = [
+  'Treuhand-gesichert — Geld fließt erst nach Transfer',
+  'Kuratiert — jedes Listing wird geprüft',
+  'Verifizierte Umsätze (Stripe · Paddle · App Store)',
+  'NDA & Verträge anwaltlich vorbereitet',
+  'DSGVO-konform · Hosting in der EU',
+  '6% — und nur bei erfolgreichem Deal',
+]
+
 const bleedSection = {
   background: 'var(--bg-warm)',
   margin: '0 -100vw',
@@ -90,7 +101,7 @@ export default function Home() {
         <div className="container">
           <div className="hero-grid">
             <div>
-              <div className="eyebrow">EST. 2026 · DER MARKTPLATZ FÜR ENTWICKLER</div>
+              <div className="eyebrow">PILOTPHASE 2026 · KURATIERTER MARKTPLATZ FÜR SOFTWARE</div>
               <h1>
                 Wo Software<br />
                 den Besitzer <em>wechselt.</em>
@@ -99,14 +110,14 @@ export default function Home() {
                 Atelier ist die kuratierte Börse für fertige Apps, SaaS-Produkte und ganze Software-Firmen. Verifizierte Umsätze, geprüfter Code, sicherer Transfer — ohne dass du dich um Verträge, Treuhand oder Lizenzfragen kümmern musst.
               </p>
               <div className="hero-actions">
-                <a href="#marketplace" className="btn btn-primary">Marktplatz erkunden <span>→</span></a>
-                <a href="#sellers" className="btn">Projekt verkaufen</a>
+                <HashLink hash="marketplace" className="btn btn-primary">Marktplatz erkunden <span>→</span></HashLink>
+                <Link to="/sell" className="btn">Projekt verkaufen</Link>
               </div>
             </div>
             <aside className="hero-feature">
               <div className="feature-meta">
                 <span>SaaS · B2B</span>
-                <span>● Live</span>
+                <span>● Beispiel</span>
               </div>
               <div className="feature-title">TaskFlow Pro</div>
               <div className="feature-sub">Projektmanagement für Agenturen</div>
@@ -133,28 +144,41 @@ export default function Home() {
                   <div className="price-big">€48.500</div>
                   <div className="price-meta">≈ 15× MRR</div>
                 </div>
-                <a href="#marketplace" className="btn btn-primary" style={{ fontSize: 12, padding: '8px 14px' }}>Ansehen →</a>
+                <HashLink hash="marketplace" className="btn btn-primary" style={{ fontSize: 12, padding: '8px 14px' }}>Ansehen →</HashLink>
               </div>
+              <div style={{ fontFamily: "'Geist Mono', monospace", fontSize: 11, color: 'var(--ink-mute)', marginTop: 14, textAlign: 'center' }}>Beispielhafte Darstellung eines Listings</div>
             </aside>
           </div>
 
           <div className="hero-stats">
             <div className="hero-stat">
-              <div className="hero-stat-num">1.247<sup>+</sup></div>
-              <div className="hero-stat-label">Aktive Listings auf<br />der Plattform</div>
+              <div className="hero-stat-num">0<sup>€</sup></div>
+              <div className="hero-stat-label">Risiko für den Käufer —<br />Geld bleibt in Treuhand</div>
             </div>
             <div className="hero-stat">
-              <div className="hero-stat-num">€38<sup>M</sup></div>
-              <div className="hero-stat-label">Transaktionsvolumen<br />in 2025</div>
+              <div className="hero-stat-num">6<sup>%</sup></div>
+              <div className="hero-stat-label">Provision — und nur,<br />wenn der Deal schließt</div>
             </div>
             <div className="hero-stat">
-              <div className="hero-stat-num">94<sup>%</sup></div>
-              <div className="hero-stat-label">Erfolgreich abgeschlossene<br />Treuhand-Deals</div>
+              <div className="hero-stat-num">48<sup>h</sup></div>
+              <div className="hero-stat-label">bis zum internen<br />Code- &amp; Umsatz-Review</div>
             </div>
             <div className="hero-stat">
-              <div className="hero-stat-num">48h</div>
-              <div className="hero-stat-label">Durchschnittliche<br />Code-Review-Zeit</div>
+              <div className="hero-stat-num">100<sup>%</sup></div>
+              <div className="hero-stat-label">kuratiert — jedes Listing<br />wird vor Freigabe geprüft</div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TRUST BAR */}
+      <section className="trustbar-wrap">
+        <div className="container">
+          <div className="trustbar-status">● Pilotphase — wir starten mit einer kuratierten ersten Welle an Projekten.</div>
+          <div className="trustbar">
+            {trustSignals.map((t) => (
+              <div className="trustbar-item" key={t}>{t}</div>
+            ))}
           </div>
         </div>
       </section>
@@ -223,12 +247,13 @@ export default function Home() {
                 Wir arbeiten mit einem regulierten Treuhandpartner. Der Käufer überweist den Kaufpreis an die Treuhand. Erst wenn der Verkäufer alle vereinbarten Assets übergeben hat und beide Seiten bestätigen, wird das Geld freigegeben — abzüglich unserer Gebühr von 6%.
               </p>
               <div style={{ display: 'flex', gap: 16 }}>
-                <a href="#trust" className="btn btn-primary">Treuhand-Details ansehen <span>→</span></a>
-                <a href="#how" className="btn">FAQ</a>
+                <HashLink hash="trust" className="btn btn-primary">Treuhand-Details ansehen <span>→</span></HashLink>
+                <Link to="/faq" className="btn">Häufige Fragen</Link>
               </div>
             </div>
 
             <div className="deal-visual">
+              <div style={{ fontFamily: "'Geist Mono', monospace", fontSize: 10, color: 'var(--ink-mute)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>Illustration · kein realer Deal</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                 <div style={{ fontFamily: "'Geist Mono', monospace", fontSize: 11, color: 'var(--ink-mute)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Deal #ATL-2026-0814</div>
                 <div style={{ fontFamily: "'Geist Mono', monospace", fontSize: 11, color: 'var(--success)' }}>● AKTIV</div>
@@ -301,7 +326,7 @@ export default function Home() {
                 <li>6% Gebühr nur bei Erfolg</li>
                 <li>Earn-Out & Anteils-Optionen</li>
               </ul>
-              <a href="#marketplace" className="btn btn-light">Projekt einstellen <span>→</span></a>
+              <Link to="/sell" className="btn btn-light">Projekt einstellen <span>→</span></Link>
             </div>
 
             <div className="audience-card alt">
@@ -314,7 +339,7 @@ export default function Home() {
                 <li>Treuhand-gesicherter Kaufprozess</li>
                 <li>Optional: 90 Tage Handover-Support</li>
               </ul>
-              <a href="#marketplace" className="btn btn-light">Marktplatz ansehen <span>→</span></a>
+              <HashLink hash="marketplace" className="btn btn-light">Marktplatz ansehen <span>→</span></HashLink>
             </div>
           </div>
         </div>
@@ -331,8 +356,8 @@ export default function Home() {
             Atelier ist die Plattform, auf der Entwickler*innen und Käufer*innen einander finden — ohne Schnäppchenjäger, ohne juristisches Risiko, mit echtem Respekt für die Arbeit.
           </p>
           <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
-            <a href="#" className="btn btn-primary">Jetzt Account erstellen <span>→</span></a>
-            <a href="#" className="btn">Demo buchen</a>
+            <Link to="/login" className="btn btn-primary">Jetzt kostenlos starten <span>→</span></Link>
+            <Link to="/demo" className="btn">Demo ansehen</Link>
           </div>
         </div>
       </section>

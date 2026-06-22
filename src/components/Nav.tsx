@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import HashLink from './HashLink'
 import { useAuth } from '../state/AuthContext'
 
-const NAV_ITEMS = [
-  { href: '/#marketplace', label: 'Marktplatz' },
-  { href: '/#how', label: 'Ablauf' },
-  { href: '/#sellers', label: 'Verkaufen' },
-  { href: '/#trust', label: 'Treuhand' },
-  { href: '/#about', label: 'Über uns' },
+const NAV_ITEMS: { label: string; hash?: string; to?: string }[] = [
+  { label: 'Marktplatz', hash: 'marketplace' },
+  { label: 'Ablauf', hash: 'how' },
+  { label: 'Preise', to: '/preise' },
+  { label: 'FAQ', to: '/faq' },
+  { label: 'Treuhand', hash: 'trust' },
 ]
 
 export default function Nav() {
@@ -46,7 +47,9 @@ export default function Nav() {
         </Link>
         <ul className="nav-links">
           {NAV_ITEMS.map((i) => (
-            <li key={i.href}><a href={i.href}>{i.label}</a></li>
+            <li key={i.label}>
+              {i.to ? <Link to={i.to}>{i.label}</Link> : <HashLink hash={i.hash!}>{i.label}</HashLink>}
+            </li>
           ))}
         </ul>
         <div className="nav-cta">{authActions()}</div>
@@ -62,9 +65,13 @@ export default function Nav() {
       </div>
       {open && (
         <div className="container nav-mobile">
-          {NAV_ITEMS.map((i) => (
-            <a key={i.href} href={i.href} onClick={close}>{i.label}</a>
-          ))}
+          {NAV_ITEMS.map((i) =>
+            i.to ? (
+              <Link key={i.label} to={i.to} onClick={close}>{i.label}</Link>
+            ) : (
+              <HashLink key={i.label} hash={i.hash!} onClick={close}>{i.label}</HashLink>
+            )
+          )}
           <div className="nav-mobile-cta">{authActions(close)}</div>
         </div>
       )}
