@@ -23,6 +23,6 @@ verify_jwt = false
 [functions.generate-listing]
 verify_jwt = true
 
-# Verifizierungs-Entscheid: JWT nötig; die Funktion prüft zusätzlich platform_staff.
+# Verifizierungs-Entscheid: JWT-gated; die Funktion prüft zusätzlich platform_staff.
 [functions.verification-review]
 verify_jwt = true

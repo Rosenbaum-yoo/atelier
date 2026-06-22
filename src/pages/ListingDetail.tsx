@@ -43,14 +43,6 @@ const blockTitle = {
 
 const bars = [40, 44, 42, 50, 54, 58, 55, 64, 70, 76, 84, 100]
 
-const dueDiligence = [
-  { s: 'done', icon: '✓', name: 'Umsatznachweise verifiziert', meta: 'Stripe · App Store · 12 Monate' },
-  { s: 'done', icon: '✓', name: 'Code-Audit bestanden', meta: 'Architektur · Test-Coverage · Security' },
-  { s: 'done', icon: '✓', name: 'Verträge & Lizenzen geprüft', meta: 'Anwaltlich · übertragbar' },
-  { s: 'active', icon: '●', name: 'Live-Zugang auf Anfrage', meta: 'Nach NDA-Signatur freigeschaltet' },
-  { s: '', icon: '05', name: 'Kundenliste (vertraulich)', meta: 'Im Dealroom nach Freigabe' },
-]
-
 const thumbs = ['Dashboard', 'Workflow', 'Mobile']
 
 export default function ListingDetail() {
@@ -151,6 +143,20 @@ export default function ListingDetail() {
       </>
     )
   }
+
+  // Due-Diligence-Status aus ECHTEN Verifizierungs-Flags (kein Fake mehr). Unbelegte
+  // Prüfungen erscheinen ehrlich als „auf Anfrage"/„im Dealroom", nie als „bestanden".
+  const dueDiligence = [
+    l.revenueVerified
+      ? { s: 'done', icon: '✓', name: 'Umsatznachweise verifiziert', meta: 'Vom Atelier-Team geprüft' }
+      : { s: '', icon: '–', name: 'Umsatznachweise', meta: 'Noch nicht eingereicht' },
+    l.sellerVerified
+      ? { s: 'done', icon: '✓', name: 'Verkäufer-Identität verifiziert', meta: 'Vom Atelier-Team geprüft' }
+      : { s: '', icon: '–', name: 'Verkäufer-Identität', meta: 'Noch nicht verifiziert' },
+    { s: 'active', icon: '●', name: 'Code-Audit auf Anfrage', meta: 'Über ITDienstleistungenConnect' },
+    { s: 'active', icon: '●', name: 'Verträge & Lizenzen', meta: 'Im Dealroom nach NDA' },
+    { s: '', icon: '05', name: 'Kundenliste (vertraulich)', meta: 'Im Dealroom nach Freigabe' },
+  ]
 
   return (
     <>
