@@ -6,8 +6,8 @@ export default defineConfig({
   // Eigener fester Dev-/Preview-Port für Atelier (Session 11) — verhindert die
   // Kollision mit den anderen Projekten (die auf 5173+ laufen). strictPort: lieber
   // ein klarer "Port belegt"-Fehler als stilles Hochwandern in ein Nachbar-Projekt.
-  server: { port: 5011, strictPort: true },
-  preview: { port: 5011, strictPort: true },
+  server: { port: 5411, strictPort: true },
+  preview: { port: 5411, strictPort: true },
   plugins: [
     react(),
     VitePWA({

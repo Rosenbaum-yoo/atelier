@@ -179,3 +179,7 @@ A Umsatz-Fundament (Stripe + Treuhand + Trust Center) — **weitgehend erledigt*
 - **ScrollToTop** wird in `App.tsx` GLOBAL vor `<Routes>` gerendert.
 - **i18n-Realitaet (ehrlich):** Trotz Direktive "weltweit ab Tag 1" ist i18n real NOCH NICHT begonnen — weder Frontend noch Edge Functions; alle 4 Functions geben hartkodiert DEUTSCHE Fehlertexte zurueck. Offene Luecke.
 - **Mobile/PWA-Stand:** responsive.css mit Nav-Menue + 29-Gap-Audit (verifiziert); PWA via vite-plugin-pwa (manifest + Brand-Icons + Supabase/Stripe NetworkOnly) in Umsetzung.
+## Betrieb (lokal + Deploy)
+- **Dev-Server:** `npm run dev` -> **http://localhost:5411** (fester Port, strictPort; Schema 5400+Projektnr). **Nur npm**, kein pnpm (Mischen korrumpiert node_modules + bricht den Cloudflare-Build).
+- **Deploy:** `git push origin main` -> Cloudflare Pages baut mit npm -> https://atelier-a9e.pages.dev. Nach jedem Push **verifizieren** (Live-URL auf neuen Marker pollen, z.B. /manifest.webmanifest). Bei Haengern: Cloudflare-Wartungsbanner pruefen.
+- **Stale-Config-Falle:** `tsc -b` emittiert evtl. `vite.config.js` (gitignored); ueberschreibt die .ts beim Dev-Start -> bei falschem Port `vite.config.js`/`.d.ts` loeschen.
