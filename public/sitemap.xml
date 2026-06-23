@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://atelier-a9e.pages.dev/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://atelier-a9e.pages.dev/preise</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://atelier-a9e.pages.dev/faq</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://atelier-a9e.pages.dev/ueber-uns</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://atelier-a9e.pages.dev/demo</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://atelier-a9e.pages.dev/recht</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://atelier-a9e.pages.dev/recht/agb</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://atelier-a9e.pages.dev/recht/datenschutz</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://atelier-a9e.pages.dev/recht/widerruf</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://atelier-a9e.pages.dev/recht/impressum</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+</urlset>

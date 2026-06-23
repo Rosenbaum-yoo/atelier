@@ -44,6 +44,7 @@ export default function Footer() {
           <div className="footer-col">
             <h4>Über uns</h4>
             <ul>
+              <li><Link to="/ueber-uns">Über Atelier</Link></li>
               <li><Link to="/recht">Trust Center</Link></li>
               <li><Link to="/recht/impressum">Kontakt</Link></li>
             </ul>
