@@ -59,7 +59,7 @@ infra/ · Dockerfile       <- Self-Host-Schalter (nicht aktiv)
 ```
 
 ### Routen (App.tsx)
-`/` Home · `/listing/:id` Detail · `/preise` Preise · `/faq` FAQ · `/demo` Walkthrough · `/recht` Trust-Hub · `/recht/:slug` Rechtsdokument · `/login` · **geschuetzt** (`ProtectedRoute`): `/sell` `/dashboard` `/dealroom` `/staff` (Staff Center / Verifizierungs-Queue). Anker-Navigation via `HashLink` (SPA, kein Full-Reload) + hash-aware `ScrollToTop`.
+`/` Home (eager) · `/listing/:id` Detail · `/preise` Preise · `/faq` FAQ · `/ueber-uns` About/Vision · `/demo` Walkthrough · `/recht` Trust-Hub · `/recht/:slug` Rechtsdokument · `/login` · **geschuetzt** (`ProtectedRoute`): `/sell` `/dashboard` `/dealroom` `/staff` (Staff Center / Verifizierungs-Queue). Alle Nicht-Landing-Routen **lazy** (`React.lazy`+`Suspense`, kleineres Initial-Bundle). Anker-Navigation via `HashLink` (SPA, kein Full-Reload) + hash-aware `ScrollToTop`. **SEO/Social:** statisches Meta + OpenGraph/Twitter + JSON-LD in `index.html`; `public/robots.txt` + `sitemap.xml` + `og-cover.png` (1200x630, via sharp aus `og-cover.svg`).
 
 ## DESIGN-LOCK (nicht verhandelbar)
 - Single source of truth: `src/styles/atelier.css` — **verbatim aus `atelier.html`**, nie umgeschrieben. Neue App-CSS lebt in `app.css`/`responsive.css` und nutzt **ausschliesslich bestehende Tokens + Klassen**.
